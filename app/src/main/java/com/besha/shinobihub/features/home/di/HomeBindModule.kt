@@ -9,18 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class HomeBindModule {
-
     @Binds
     abstract fun bindHomeRemoteClient(homeRemoteClientImp: HomeRemoteClientImp): HomeRemoteClient
 
     @Binds
     abstract fun bindHomeRepo(homeRepoImp: HomeRepoImp): HomeRepo
-
-
-
-
 }

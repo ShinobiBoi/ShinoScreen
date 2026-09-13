@@ -9,19 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DetailBindModule {
-
-
     @Binds
     abstract fun bindDetailRemoteClient(detailRemoteClientImp: DetailRemoteClientImp): DetailRemoteClient
 
     @Binds
     abstract fun bindDetailRepo(detailRepoImp: DetailRepoImp): DetailRepo
-
-
-
-
 }

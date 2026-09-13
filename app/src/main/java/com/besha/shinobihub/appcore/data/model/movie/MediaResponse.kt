@@ -7,5 +7,5 @@ data class MediaResponse(
     @SerializedName("results", alternate = ["cast"])
     val mediaItems: List<MediaItemDto>? = listOf(),
     val total_pages: Int? = 0,
-    val total_results: Int? = 0
+    val total_results: Int? = 0,
 )

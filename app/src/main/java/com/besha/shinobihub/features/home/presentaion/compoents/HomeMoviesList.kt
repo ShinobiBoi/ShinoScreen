@@ -19,26 +19,26 @@ import com.besha.shinobihub.appcore.domain.model.MediaType
 import com.besha.shinobihub.appcore.mvi.MediaViewState
 
 @Composable
-fun HomeMoviesList(state: MediaViewState, title: String,
-                   onItemClick: (Int, MediaType) -> Unit) {
-
+fun HomeMoviesList(
+    state: MediaViewState,
+    title: String,
+    onItemClick: (Int, MediaType) -> Unit,
+) {
     Column(
         modifier = Modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
-
         Text(
             text = title,
             color = colorResource(R.color.black),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 13.dp, top = 50.dp),
-            textAlign = TextAlign.Start
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 13.dp, top = 50.dp),
+            textAlign = TextAlign.Start,
         )
-
 
         when {
             state.isLoading -> {
@@ -50,15 +50,13 @@ fun HomeMoviesList(state: MediaViewState, title: String,
                     text = "It's empty here!",
                     color = colorResource(R.color.gray),
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
             }
 
             else -> {
-                PosterList(state.data,onItemClick)
-
+                PosterList(state.data, onItemClick)
             }
         }
     }
-
 }

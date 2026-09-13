@@ -4,10 +4,10 @@ enum class MediaType(val value: String) {
     All(""),
     Movies("movie"),
     Tv("tv"),
-    People("person");
+    People("person"),
+    ;
 
     companion object {
-        operator fun invoke(value: String) : MediaType = MediaType.entries.first{ it.value == value }
+        operator fun invoke(value: String): MediaType = MediaType.entries.first { it.value == value }
     }
-
 }

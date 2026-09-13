@@ -34,7 +34,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -55,80 +54,86 @@ class HomeViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = HomeViewModel(
-            getTrendingAllUseCase, getTrendingMoviesUseCase, getTrendingTvUseCase,
-            getTrendingPeopleUseCase, getPopularMoviesUseCase, getTopRatedMoviesUseCase,
-            getUpComingMoviesUseCase, getOnTheAirTvUseCase, getPopularTvUseCase,
-            getTopRatedTvUseCase, getAccountUseCase, sessionManager
-        )
+        viewModel =
+            HomeViewModel(
+                getTrendingAllUseCase, getTrendingMoviesUseCase, getTrendingTvUseCase,
+                getTrendingPeopleUseCase, getPopularMoviesUseCase, getTopRatedMoviesUseCase,
+                getUpComingMoviesUseCase, getOnTheAirTvUseCase, getPopularTvUseCase,
+                getTopRatedTvUseCase, getAccountUseCase, sessionManager,
+            )
     }
 
     @Test
-    fun `GetTrendingAll emits loading then success`() = runTest {
-        val movies = listOf(MediaItem(id = 1, media_type = MediaType.Movies))
-        coEvery { getTrendingAllUseCase(1) } returns DataState.Success(movies)
+    fun `GetTrendingAll emits loading then success`() =
+        runTest {
+            val movies = listOf(MediaItem(id = 1, media_type = MediaType.Movies))
+            coEvery { getTrendingAllUseCase(1) } returns DataState.Success(movies)
 
-        viewModel.handleAction(HomeAction.GetTrendingAll).test {
-            val loading = awaitItem() as HomeResult.TrendingAllLoaded
-            assertThat(loading.state.isLoading).isTrue()
+            viewModel.handleAction(HomeAction.GetTrendingAll).test {
+                val loading = awaitItem() as HomeResult.TrendingAllLoaded
+                assertThat(loading.state.isLoading).isTrue()
 
-            val success = awaitItem() as HomeResult.TrendingAllLoaded
-            assertThat(success.state.data).isEqualTo(movies)
-            assertThat(success.state.isSuccess).isTrue()
+                val success = awaitItem() as HomeResult.TrendingAllLoaded
+                assertThat(success.state.data).isEqualTo(movies)
+                assertThat(success.state.isSuccess).isTrue()
 
-            awaitComplete()
+                awaitComplete()
+            }
+            coVerify(exactly = 1) { getTrendingAllUseCase(1) }
         }
-        coVerify(exactly = 1) { getTrendingAllUseCase(1) }
-    }
 
     @Test
-    fun `GetTrendingAll emits error state when use case fails`() = runTest {
-        val error = RuntimeException("network down")
-        coEvery { getTrendingAllUseCase(1) } returns DataState.Error(error)
+    fun `GetTrendingAll emits error state when use case fails`() =
+        runTest {
+            val error = RuntimeException("network down")
+            coEvery { getTrendingAllUseCase(1) } returns DataState.Error(error)
 
-        viewModel.handleAction(HomeAction.GetTrendingAll).test {
-            awaitItem() // loading, not the focus of this test
-            val result = awaitItem() as HomeResult.TrendingAllLoaded
-            assertThat(result.state.errorThrowable).isEqualTo(error)
-            awaitComplete()
+            viewModel.handleAction(HomeAction.GetTrendingAll).test {
+                awaitItem() // loading, not the focus of this test
+                val result = awaitItem() as HomeResult.TrendingAllLoaded
+                assertThat(result.state.errorThrowable).isEqualTo(error)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetTrendingAll emits empty state when there is no data`() = runTest {
-        coEvery { getTrendingAllUseCase(1) } returns DataState.Empty
+    fun `GetTrendingAll emits empty state when there is no data`() =
+        runTest {
+            coEvery { getTrendingAllUseCase(1) } returns DataState.Empty
 
-        viewModel.handleAction(HomeAction.GetTrendingAll).test {
-            awaitItem() // loading
-            val result = awaitItem() as HomeResult.TrendingAllLoaded
-            assertThat(result.state.isEmpty).isTrue()
-            awaitComplete()
+            viewModel.handleAction(HomeAction.GetTrendingAll).test {
+                awaitItem() // loading
+                val result = awaitItem() as HomeResult.TrendingAllLoaded
+                assertThat(result.state.isEmpty).isTrue()
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetAccount saves account id and emits success when session exists`() = runTest {
-        val sessionId = "abc123"
-        val account = AccountResponse(id = 42, username = "naruto")
-        every { sessionManager.getSessionId() } returns flowOf(sessionId)
-        coEvery { getAccountUseCase(sessionId) } returns DataState.Success(account)
-        coEvery { sessionManager.saveAccountId(42) } just Runs
+    fun `GetAccount saves account id and emits success when session exists`() =
+        runTest {
+            val sessionId = "abc123"
+            val account = AccountResponse(id = 42, username = "naruto")
+            every { sessionManager.getSessionId() } returns flowOf(sessionId)
+            coEvery { getAccountUseCase(sessionId) } returns DataState.Success(account)
+            coEvery { sessionManager.saveAccountId(42) } just Runs
 
-        viewModel.handleAction(HomeAction.GetAccount).test {
-            val result = awaitItem() as HomeResult.AccountedLoaded
-            assertThat(result.state.data).isEqualTo(account)
-            awaitComplete()
+            viewModel.handleAction(HomeAction.GetAccount).test {
+                val result = awaitItem() as HomeResult.AccountedLoaded
+                assertThat(result.state.data).isEqualTo(account)
+                awaitComplete()
+            }
+            coVerify { sessionManager.saveAccountId(42) }
         }
-        coVerify { sessionManager.saveAccountId(42) }
-    }
 
     @Test
-    fun `GetAccount emits nothing when sessionId is null`() = runTest {
-        every { sessionManager.getSessionId() } returns flowOf(null)
+    fun `GetAccount emits nothing when sessionId is null`() =
+        runTest {
+            every { sessionManager.getSessionId() } returns flowOf(null)
 
-        viewModel.handleAction(HomeAction.GetAccount).test {
-            awaitComplete() // no HomeResult should be emitted
+            viewModel.handleAction(HomeAction.GetAccount).test {
+                awaitComplete() // no HomeResult should be emitted
+            }
+            coVerify(exactly = 0) { getAccountUseCase(any()) }
         }
-        coVerify(exactly = 0) { getAccountUseCase(any()) }
-    }
 }

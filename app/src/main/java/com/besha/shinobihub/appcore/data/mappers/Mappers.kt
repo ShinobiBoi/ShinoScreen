@@ -21,15 +21,18 @@ fun <T> Response<T>.toDataState(): DataState<T> {
 }
 
 fun DataState<MediaResponse>.validate(): DataState<List<MediaItem>> {
-    return when(this){
-        is DataState.Success->{
-            if (this.data.mediaItems.isNullOrEmpty()) DataState.Empty
-            else DataState.Success(this.data.mediaItems.map { it.toDomain() })
+    return when (this) {
+        is DataState.Success -> {
+            if (this.data.mediaItems.isNullOrEmpty()) {
+                DataState.Empty
+            } else {
+                DataState.Success(this.data.mediaItems.map { it.toDomain() })
+            }
         }
-        is DataState.Error->{
+        is DataState.Error -> {
             DataState.Error(this.throwable)
         }
-        else->{
+        else -> {
             DataState.Error(UnknownError())
         }
     }

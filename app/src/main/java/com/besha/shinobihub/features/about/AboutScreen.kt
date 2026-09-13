@@ -29,31 +29,33 @@ fun AboutScreen(navController: NavController) {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.white),
-                    titleContentColor = colorResource(R.color.black),
-                    navigationIconContentColor = colorResource(R.color.black)
-                )
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = colorResource(R.color.white),
+                        titleContentColor = colorResource(R.color.black),
+                        navigationIconContentColor = colorResource(R.color.black),
+                    ),
             )
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(R.color.white))
-                .padding(innerPadding)
-                .padding(24.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(colorResource(R.color.white))
+                    .padding(innerPadding)
+                    .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.tmdb),
                 contentDescription = "TMDB Logo",
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(120.dp),
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
@@ -62,7 +64,7 @@ fun AboutScreen(navController: NavController) {
                 color = colorResource(R.color.gray),
                 textAlign = TextAlign.Center,
                 lineHeight = 24.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
     }

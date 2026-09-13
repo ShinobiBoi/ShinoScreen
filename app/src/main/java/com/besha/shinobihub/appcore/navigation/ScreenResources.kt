@@ -4,7 +4,6 @@ import com.besha.shinobihub.appcore.domain.model.MediaType
 import kotlinx.serialization.Serializable
 
 sealed class ScreenResources {
-
     @Serializable
     object AuthScreenRoute : ScreenResources()
 
@@ -17,7 +16,7 @@ sealed class ScreenResources {
     @Serializable
     data class MainScreeRoute(
         val mediaId: Int? = null,
-        val mediaType: MediaType? = null
+        val mediaType: MediaType? = null,
     ) : ScreenResources()
 
     @Serializable
@@ -44,7 +43,7 @@ sealed class ScreenResources {
     @Serializable
     data class DetailScreenRoute(
         val id: Int,
-        val mediaType: MediaType
+        val mediaType: MediaType,
     ) : ScreenResources()
 
     companion object {

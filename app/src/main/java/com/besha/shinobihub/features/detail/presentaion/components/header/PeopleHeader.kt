@@ -24,56 +24,52 @@ import coil.compose.AsyncImage
 import com.besha.shinobihub.R
 import com.besha.shinobihub.features.detail.domain.model.DetailMediaItem
 
-
 @Composable
-fun PeopleHeader(posterHeight: Dp, mediaItem: DetailMediaItem?, sessionId: String?) {
-
-
+fun PeopleHeader(
+    posterHeight: Dp,
+    mediaItem: DetailMediaItem?,
+    sessionId: String?,
+) {
     Row(modifier = Modifier.padding(horizontal = 18.dp), verticalAlignment = Alignment.CenterVertically) {
         // Poster
         Card(
-            modifier = Modifier
-                .width(140.dp)
-                .height(posterHeight),
+            modifier =
+                Modifier
+                    .width(140.dp)
+                    .height(posterHeight),
             shape = RoundedCornerShape(10.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-            border = BorderStroke(2.dp, Color.White)
-
+            border = BorderStroke(2.dp, Color.White),
         ) {
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/original${mediaItem?.resolvedPoster}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
+                modifier = Modifier,
             )
         }
 
         Spacer(modifier = Modifier.width(16.dp))
 
         Column(modifier = Modifier) {
-
             Text(
                 modifier = Modifier.padding(top = 8.dp),
                 text = mediaItem?.resolvedTilte ?: "",
                 fontWeight = FontWeight.Bold,
-                color = colorResource(R.color.black)
+                color = colorResource(R.color.black),
             )
 
             Text(
                 modifier = Modifier,
-                //.padding(top = 8.dp),
+                // .padding(top = 8.dp),
                 text = "Born at: ${mediaItem?.birthday}",
-                color = colorResource(R.color.gray)
+                color = colorResource(R.color.gray),
             )
 
             Text(
-
                 text = "Known for: ${mediaItem?.known_for_department}",
-                color = colorResource(R.color.gray)
+                color = colorResource(R.color.gray),
             )
-
         }
-
     }
-
 }

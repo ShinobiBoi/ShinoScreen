@@ -21,7 +21,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FavouriteViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -33,201 +32,213 @@ class FavouriteViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = FavouriteViewModel(
-            getMovieFavouriteUseCase,
-            getTvFavouriteUseCase,
-            sessionManager
-        )
+        viewModel =
+            FavouriteViewModel(
+                getMovieFavouriteUseCase,
+                getTvFavouriteUseCase,
+                sessionManager,
+            )
     }
 
     // region GetMovieFavourite Tests
 
     @Test
-    fun `GetMovieFavourite emits loading then success when session and account IDs exist`() = runTest {
-        val sessionId = "session_123"
-        val accountId = 1
-        val movies = listOf(MediaItem(id = 1, media_type = MediaType.Movies))
-        
-        every { sessionManager.getSessionId() } returns flowOf(sessionId)
-        every { sessionManager.getAccountId() } returns flowOf(accountId)
-        coEvery { getMovieFavouriteUseCase(accountId, sessionId) } returns DataState.Success(movies)
+    fun `GetMovieFavourite emits loading then success when session and account IDs exist`() =
+        runTest {
+            val sessionId = "session_123"
+            val accountId = 1
+            val movies = listOf(MediaItem(id = 1, media_type = MediaType.Movies))
 
-        viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
-            val loading = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(loading.media.isLoading).isTrue()
+            every { sessionManager.getSessionId() } returns flowOf(sessionId)
+            every { sessionManager.getAccountId() } returns flowOf(accountId)
+            coEvery { getMovieFavouriteUseCase(accountId, sessionId) } returns DataState.Success(movies)
 
-            val success = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(success.media.data).isEqualTo(movies)
-            assertThat(success.media.isSuccess).isTrue()
+            viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
+                val loading = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(loading.media.isLoading).isTrue()
 
-            awaitComplete()
+                val success = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(success.media.data).isEqualTo(movies)
+                assertThat(success.media.isSuccess).isTrue()
+
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetMovieFavourite emits loading then error when session ID is missing`() = runTest {
-        every { sessionManager.getSessionId() } returns flowOf(null)
-        every { sessionManager.getAccountId() } returns flowOf(1)
+    fun `GetMovieFavourite emits loading then error when session ID is missing`() =
+        runTest {
+            every { sessionManager.getSessionId() } returns flowOf(null)
+            every { sessionManager.getAccountId() } returns flowOf(1)
 
-        viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
-            val loading = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(loading.media.isLoading).isTrue()
+            viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
+                val loading = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(loading.media.isLoading).isTrue()
 
-            val error = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(error.media.errorThrowable?.message).isEqualTo("Missing session or account ID")
+                val error = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(error.media.errorThrowable?.message).isEqualTo("Missing session or account ID")
 
-            awaitComplete()
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetMovieFavourite emits loading then error when account ID is missing`() = runTest {
-        every { sessionManager.getSessionId() } returns flowOf("session_123")
-        every { sessionManager.getAccountId() } returns flowOf(null)
+    fun `GetMovieFavourite emits loading then error when account ID is missing`() =
+        runTest {
+            every { sessionManager.getSessionId() } returns flowOf("session_123")
+            every { sessionManager.getAccountId() } returns flowOf(null)
 
-        viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
-            val loading = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(loading.media.isLoading).isTrue()
+            viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
+                val loading = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(loading.media.isLoading).isTrue()
 
-            val error = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(error.media.errorThrowable?.message).isEqualTo("Missing session or account ID")
+                val error = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(error.media.errorThrowable?.message).isEqualTo("Missing session or account ID")
 
-            awaitComplete()
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetMovieFavourite emits loading then empty when use case returns empty`() = runTest {
-        val sessionId = "session_123"
-        val accountId = 1
-        
-        every { sessionManager.getSessionId() } returns flowOf(sessionId)
-        every { sessionManager.getAccountId() } returns flowOf(accountId)
-        coEvery { getMovieFavouriteUseCase(accountId, sessionId) } returns DataState.Empty
+    fun `GetMovieFavourite emits loading then empty when use case returns empty`() =
+        runTest {
+            val sessionId = "session_123"
+            val accountId = 1
 
-        viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
-            awaitItem() // loading
-            val empty = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(empty.media.isEmpty).isTrue()
-            awaitComplete()
+            every { sessionManager.getSessionId() } returns flowOf(sessionId)
+            every { sessionManager.getAccountId() } returns flowOf(accountId)
+            coEvery { getMovieFavouriteUseCase(accountId, sessionId) } returns DataState.Empty
+
+            viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
+                awaitItem() // loading
+                val empty = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(empty.media.isEmpty).isTrue()
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetMovieFavourite emits loading then error when use case returns error`() = runTest {
-        val sessionId = "session_123"
-        val accountId = 1
-        val exception = Throwable("Network Error")
-        
-        every { sessionManager.getSessionId() } returns flowOf(sessionId)
-        every { sessionManager.getAccountId() } returns flowOf(accountId)
-        coEvery { getMovieFavouriteUseCase(accountId, sessionId) } returns DataState.Error(exception)
+    fun `GetMovieFavourite emits loading then error when use case returns error`() =
+        runTest {
+            val sessionId = "session_123"
+            val accountId = 1
+            val exception = Throwable("Network Error")
 
-        viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
-            awaitItem() // loading
-            val error = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(error.media.errorThrowable).isEqualTo(exception)
-            awaitComplete()
+            every { sessionManager.getSessionId() } returns flowOf(sessionId)
+            every { sessionManager.getAccountId() } returns flowOf(accountId)
+            coEvery { getMovieFavouriteUseCase(accountId, sessionId) } returns DataState.Error(exception)
+
+            viewModel.handleAction(FavouriteAction.GetMovieFavourite).test {
+                awaitItem() // loading
+                val error = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(error.media.errorThrowable).isEqualTo(exception)
+                awaitComplete()
+            }
         }
-    }
 
     // endregion
 
     // region GetTvFavourite Tests
 
     @Test
-    fun `GetTvFavourite emits loading then success when session and account IDs exist`() = runTest {
-        val sessionId = "session_123"
-        val accountId = 1
-        val tvSeries = listOf(MediaItem(id = 2, media_type = MediaType.Tv))
-        
-        every { sessionManager.getSessionId() } returns flowOf(sessionId)
-        every { sessionManager.getAccountId() } returns flowOf(accountId)
-        coEvery { getTvFavouriteUseCase(accountId, sessionId) } returns DataState.Success(tvSeries)
+    fun `GetTvFavourite emits loading then success when session and account IDs exist`() =
+        runTest {
+            val sessionId = "session_123"
+            val accountId = 1
+            val tvSeries = listOf(MediaItem(id = 2, media_type = MediaType.Tv))
 
-        viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
-            val loading = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(loading.media.isLoading).isTrue()
+            every { sessionManager.getSessionId() } returns flowOf(sessionId)
+            every { sessionManager.getAccountId() } returns flowOf(accountId)
+            coEvery { getTvFavouriteUseCase(accountId, sessionId) } returns DataState.Success(tvSeries)
 
-            val success = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(success.media.data).isEqualTo(tvSeries)
-            assertThat(success.media.isSuccess).isTrue()
+            viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
+                val loading = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(loading.media.isLoading).isTrue()
 
-            awaitComplete()
+                val success = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(success.media.data).isEqualTo(tvSeries)
+                assertThat(success.media.isSuccess).isTrue()
+
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetTvFavourite emits loading then error when session ID is missing`() = runTest {
-        every { sessionManager.getSessionId() } returns flowOf(null)
-        every { sessionManager.getAccountId() } returns flowOf(1)
+    fun `GetTvFavourite emits loading then error when session ID is missing`() =
+        runTest {
+            every { sessionManager.getSessionId() } returns flowOf(null)
+            every { sessionManager.getAccountId() } returns flowOf(1)
 
-        viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
-            awaitItem() // loading
-            val error = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(error.media.errorThrowable?.message).isEqualTo("Missing session or account ID")
-            awaitComplete()
+            viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
+                awaitItem() // loading
+                val error = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(error.media.errorThrowable?.message).isEqualTo("Missing session or account ID")
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetTvFavourite emits loading then error when account ID is missing`() = runTest {
-        every { sessionManager.getSessionId() } returns flowOf("session_123")
-        every { sessionManager.getAccountId() } returns flowOf(null)
+    fun `GetTvFavourite emits loading then error when account ID is missing`() =
+        runTest {
+            every { sessionManager.getSessionId() } returns flowOf("session_123")
+            every { sessionManager.getAccountId() } returns flowOf(null)
 
-        viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
-            awaitItem() // loading
-            val error = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(error.media.errorThrowable?.message).isEqualTo("Missing session or account ID")
-            awaitComplete()
+            viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
+                awaitItem() // loading
+                val error = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(error.media.errorThrowable?.message).isEqualTo("Missing session or account ID")
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetTvFavourite emits loading then empty when use case returns empty`() = runTest {
-        val sessionId = "session_123"
-        val accountId = 1
-        
-        every { sessionManager.getSessionId() } returns flowOf(sessionId)
-        every { sessionManager.getAccountId() } returns flowOf(accountId)
-        coEvery { getTvFavouriteUseCase(accountId, sessionId) } returns DataState.Empty
+    fun `GetTvFavourite emits loading then empty when use case returns empty`() =
+        runTest {
+            val sessionId = "session_123"
+            val accountId = 1
 
-        viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
-            awaitItem() // loading
-            val empty = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(empty.media.isEmpty).isTrue()
-            awaitComplete()
+            every { sessionManager.getSessionId() } returns flowOf(sessionId)
+            every { sessionManager.getAccountId() } returns flowOf(accountId)
+            coEvery { getTvFavouriteUseCase(accountId, sessionId) } returns DataState.Empty
+
+            viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
+                awaitItem() // loading
+                val empty = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(empty.media.isEmpty).isTrue()
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetTvFavourite emits loading then error when use case returns error`() = runTest {
-        val sessionId = "session_123"
-        val accountId = 1
-        val exception = Throwable("API Error")
-        
-        every { sessionManager.getSessionId() } returns flowOf(sessionId)
-        every { sessionManager.getAccountId() } returns flowOf(accountId)
-        coEvery { getTvFavouriteUseCase(accountId, sessionId) } returns DataState.Error(exception)
+    fun `GetTvFavourite emits loading then error when use case returns error`() =
+        runTest {
+            val sessionId = "session_123"
+            val accountId = 1
+            val exception = Throwable("API Error")
 
-        viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
-            awaitItem() // loading
-            val error = awaitItem() as FavouriteResult.MediaLoaded
-            assertThat(error.media.errorThrowable).isEqualTo(exception)
-            awaitComplete()
+            every { sessionManager.getSessionId() } returns flowOf(sessionId)
+            every { sessionManager.getAccountId() } returns flowOf(accountId)
+            coEvery { getTvFavouriteUseCase(accountId, sessionId) } returns DataState.Error(exception)
+
+            viewModel.handleAction(FavouriteAction.GetTvFavourite).test {
+                awaitItem() // loading
+                val error = awaitItem() as FavouriteResult.MediaLoaded
+                assertThat(error.media.errorThrowable).isEqualTo(exception)
+                awaitComplete()
+            }
         }
-    }
 
     // endregion
 
     @Test
-    fun `ChangeMediaType emits ChangeMediaType result`() = runTest {
-        val mediaType = MediaType.Tv
-        
-        viewModel.handleAction(FavouriteAction.ChangeMediaType(mediaType)).test {
-            val result = awaitItem() as FavouriteResult.ChangeMediaType
-            assertThat(result.mediaType).isEqualTo(mediaType)
-            awaitComplete()
+    fun `ChangeMediaType emits ChangeMediaType result`() =
+        runTest {
+            val mediaType = MediaType.Tv
+
+            viewModel.handleAction(FavouriteAction.ChangeMediaType(mediaType)).test {
+                val result = awaitItem() as FavouriteResult.ChangeMediaType
+                assertThat(result.mediaType).isEqualTo(mediaType)
+                awaitComplete()
+            }
         }
-    }
 }

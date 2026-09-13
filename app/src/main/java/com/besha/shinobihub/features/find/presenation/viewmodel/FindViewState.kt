@@ -6,9 +6,9 @@ import com.besha.shinobihub.appcore.mvi.CommonViewState
 import com.besha.shinobihub.appcore.mvi.MediaViewState
 import com.besha.shinobihub.appcore.mvi.ViewState
 
-data class FindViewState (
+data class FindViewState(
     val genres: CommonViewState<List<Genre>> = CommonViewState(),
-    val mediaType:MediaType = MediaType.All,
+    val mediaType: MediaType = MediaType.All,
     val query: CommonViewState<String> = CommonViewState(data = ""),
-    val media:MediaViewState = CommonViewState()
-) :ViewState
+    val media: MediaViewState = CommonViewState(),
+) : ViewState

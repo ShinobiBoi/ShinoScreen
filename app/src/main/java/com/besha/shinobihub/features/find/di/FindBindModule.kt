@@ -9,16 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class FindBindModule {
+    @Binds
+    abstract fun bindFindRemoteClient(findRemoteClientImp: FindRemoteClientImp): FindRemoteClient
 
     @Binds
-    abstract fun bindFindRemoteClient(findRemoteClientImp: FindRemoteClientImp):FindRemoteClient
-
-
-    @Binds
-    abstract fun bindFindRepo(findRepoImp: FindRepoImp):FindRepo
-
+    abstract fun bindFindRepo(findRepoImp: FindRepoImp): FindRepo
 }

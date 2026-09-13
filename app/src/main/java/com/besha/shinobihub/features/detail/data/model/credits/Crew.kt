@@ -11,5 +11,5 @@ data class Crew(
     val name: String? = "",
     val original_name: String? = "",
     val popularity: Double? = 0.0,
-    val profile_path: String? = ""
+    val profile_path: String? = "",
 )

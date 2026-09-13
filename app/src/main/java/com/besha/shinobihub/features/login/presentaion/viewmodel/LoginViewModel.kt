@@ -16,92 +16,87 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase,
-    private val createSessionUseCase: CreateSessionUseCase,
-    private val createTokenUseCase: CreateTokenUseCase,
-    private val sessionManager: SessionManager
-) : MVIBaseViewModel<LoginActions, LoginResult, LoginViewState>() {
+class LoginViewModel
+    @Inject
+    constructor(
+        private val loginUseCase: LoginUseCase,
+        private val createSessionUseCase: CreateSessionUseCase,
+        private val createTokenUseCase: CreateTokenUseCase,
+        private val sessionManager: SessionManager,
+    ) : MVIBaseViewModel<LoginActions, LoginResult, LoginViewState>() {
+        override val defaultViewState: LoginViewState
+            get() = LoginViewState()
 
+        private suspend fun handleRequestToken(flowCollector: FlowCollector<LoginResult>) {
+            when (val result = createTokenUseCase()) {
+                is DataState.Success -> {
+                    flowCollector.emit(LoginResult.RequestToken(state = CommonViewState(data = result.data)))
+                }
+                is DataState.Error -> {
+                    flowCollector.emit(LoginResult.RequestToken(state = CommonViewState(errorThrowable = result.throwable)))
+                }
 
-    override val defaultViewState: LoginViewState
-        get() = LoginViewState()
-
-    private suspend fun handleRequestToken(flowCollector: FlowCollector<LoginResult>) {
-        when (val result = createTokenUseCase()) {
-            is DataState.Success -> {
-                flowCollector.emit(LoginResult.RequestToken(state = CommonViewState(data = result.data)))
-            }
-            is DataState.Error ->{
-                flowCollector.emit(LoginResult.RequestToken(state = CommonViewState(errorThrowable = result.throwable)))
-
-            }
-
-            else ->{}
-        }
-    }
-
-
-    override fun handleAction(action: LoginActions): Flow<LoginResult> = flow {
-
-        when (action) {
-            is LoginActions.GetRequestToken -> {
-                handleRequestToken(this)
-            }
-
-            is LoginActions.Login -> {
-                handleLogin(this,action.loginRequest)
-            }
-
-            is LoginActions.CreateSession->{
-                handleCreateSession(this,action.sessionRequest)
-
-            }
-
-            is LoginActions.SaveSessionId->{
-                sessionManager.saveSessionId(action.sessionId)
-            }
-            is LoginActions.Logout->{
-                sessionManager.clearSession()
+                else -> {}
             }
         }
 
-    }
+        override fun handleAction(action: LoginActions): Flow<LoginResult> =
+            flow {
+                when (action) {
+                    is LoginActions.GetRequestToken -> {
+                        handleRequestToken(this)
+                    }
 
-    private suspend fun handleCreateSession(
-        flowCollector: FlowCollector<LoginResult>,
-        sessionRequest: SessionRequest
-    ) {
-        when(val result = createSessionUseCase(sessionRequest)){
-            is DataState.Success->{
-                flowCollector.emit(LoginResult.SessionCreated(state = CommonViewState(data = result.data)))
-            }
-            is DataState.Error->{
-                flowCollector.emit(LoginResult.SessionCreated(state = CommonViewState(errorThrowable = result.throwable)))
-            }
-            else ->{}
+                    is LoginActions.Login -> {
+                        handleLogin(this, action.loginRequest)
+                    }
 
+                    is LoginActions.CreateSession -> {
+                        handleCreateSession(this, action.sessionRequest)
+                    }
+
+                    is LoginActions.SaveSessionId -> {
+                        sessionManager.saveSessionId(action.sessionId)
+                    }
+                    is LoginActions.Logout -> {
+                        sessionManager.clearSession()
+                    }
+                }
+            }
+
+        private suspend fun handleCreateSession(
+            flowCollector: FlowCollector<LoginResult>,
+            sessionRequest: SessionRequest,
+        ) {
+            when (val result = createSessionUseCase(sessionRequest)) {
+                is DataState.Success -> {
+                    flowCollector.emit(LoginResult.SessionCreated(state = CommonViewState(data = result.data)))
+                }
+                is DataState.Error -> {
+                    flowCollector.emit(LoginResult.SessionCreated(state = CommonViewState(errorThrowable = result.throwable)))
+                }
+                else -> {}
+            }
         }
 
-    }
+        private suspend fun handleLogin(
+            flowCollector: FlowCollector<LoginResult>,
+            loginRequest: LoginRequest,
+        ) {
+            flowCollector.emit(LoginResult.Login(state = CommonViewState(isLoading = true)))
 
-    private suspend fun handleLogin(flowCollector: FlowCollector<LoginResult>, loginRequest: LoginRequest) {
+            val result = loginUseCase(loginRequest)
 
-        flowCollector.emit(LoginResult.Login(state = CommonViewState(isLoading = true)))
-
-        val result = loginUseCase(loginRequest)
-
-        when (result) {
-            is DataState.Success -> {
-                flowCollector.emit(LoginResult.Login(state = CommonViewState(data = result.data)))
-            }
-            is DataState.Error ->{
-                flowCollector.emit(LoginResult.Login(state = CommonViewState(errorThrowable = result.throwable)))
-
-            }
-            else ->{
-                flowCollector.emit(LoginResult.Login(state = CommonViewState(errorThrowable = Throwable("unknown error"))))
+            when (result) {
+                is DataState.Success -> {
+                    flowCollector.emit(LoginResult.Login(state = CommonViewState(data = result.data)))
+                }
+                is DataState.Error -> {
+                    flowCollector.emit(LoginResult.Login(state = CommonViewState(errorThrowable = result.throwable)))
+                }
+                else -> {
+                    flowCollector.emit(LoginResult.Login(state = CommonViewState(errorThrowable = Throwable("unknown error"))))
+                }
             }
         }
     }
-}

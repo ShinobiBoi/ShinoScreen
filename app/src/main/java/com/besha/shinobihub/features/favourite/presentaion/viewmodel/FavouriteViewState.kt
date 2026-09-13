@@ -5,7 +5,7 @@ import com.besha.shinobihub.appcore.mvi.CommonViewState
 import com.besha.shinobihub.appcore.mvi.MediaViewState
 import com.besha.shinobihub.appcore.mvi.ViewState
 
-data class FavouriteViewState (
-    val media:MediaViewState = CommonViewState(),
-    val mediaType: MediaType = MediaType.Movies
-):ViewState
+data class FavouriteViewState(
+    val media: MediaViewState = CommonViewState(),
+    val mediaType: MediaType = MediaType.Movies,
+) : ViewState

@@ -9,16 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class BindModule {
-
-
     @Binds
     abstract fun bindSharedRemoteClient(sharedRemoteClientImp: SharedRemoteClientImp): SharedRemoteClient
 
     @Binds
     abstract fun bindSharedRepo(sharedRepoImp: SharedRepoImp): SharedRepo
-
 }

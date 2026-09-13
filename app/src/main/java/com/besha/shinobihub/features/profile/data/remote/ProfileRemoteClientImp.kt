@@ -8,20 +8,19 @@ import com.besha.shinobihub.features.profile.domain.remote.ProfileRemoteClient
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class ProfileRemoteClientImp @Inject constructor(private val apiServices: ApiServices) :
+class ProfileRemoteClientImp
+    @Inject
+    constructor(private val apiServices: ApiServices) :
     ProfileRemoteClient {
+        override suspend fun deleteSession(body: DeleteSessionRequest): DataState<SessionResponse> {
+            val result = apiServices.deleteSession(body)
 
-    override suspend fun deleteSession(body: DeleteSessionRequest): DataState<SessionResponse> {
-
-
-        val result = apiServices.deleteSession(body)
-
-        if (result.isSuccessful) {
-            if (result.body() != null) {
-                return DataState.Success(result.body()!!)
+            if (result.isSuccessful) {
+                if (result.body() != null) {
+                    return DataState.Success(result.body()!!)
+                }
+                return DataState.Empty
             }
-            return DataState.Empty
+            return DataState.Error(HttpException(result))
         }
-        return DataState.Error(HttpException(result))
     }
-}

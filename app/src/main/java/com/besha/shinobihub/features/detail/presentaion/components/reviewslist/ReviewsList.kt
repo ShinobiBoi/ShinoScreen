@@ -25,26 +25,24 @@ import com.besha.shinobihub.R
 import com.besha.shinobihub.features.detail.data.model.review.Review
 import com.besha.shinobihub.ui.theme.poppinsFamily
 
-
 @Composable
 fun ReviewsList(
     reviews: List<Review>?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
-
     if (reviews.isNullOrEmpty()) {
         Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(vertical = 40.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .padding(vertical = 40.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = "No reviews yet.",
                 color = colorResource(R.color.gray),
                 fontSize = 14.sp,
-                fontFamily = poppinsFamily
+                fontFamily = poppinsFamily,
             )
         }
     } else {
@@ -52,10 +50,11 @@ fun ReviewsList(
         val itemsToShow = if (expanded) reviews else reviews.take(3)
 
         Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp, horizontal = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             itemsToShow.forEach { review ->
                 ReviewCard(review)
@@ -69,10 +68,11 @@ fun ReviewsList(
                     color = colorResource(R.color.dark_blue),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .clickable { expanded = !expanded }
-                        .padding(vertical = 4.dp)
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .clickable { expanded = !expanded }
+                            .padding(vertical = 4.dp),
                 )
             }
         }

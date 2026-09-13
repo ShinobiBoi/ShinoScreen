@@ -4,29 +4,26 @@ import com.besha.shinobihub.appcore.domain.model.MediaType
 import com.besha.shinobihub.appcore.mvi.MediaViewState
 import com.besha.shinobihub.appcore.mvi.Result
 
-sealed class WatchListResult :Result<WatchListViewState>{
-
-    data class MediaLoaded(val media:MediaViewState):WatchListResult(){
+sealed class WatchListResult : Result<WatchListViewState> {
+    data class MediaLoaded(val media: MediaViewState) : WatchListResult() {
         override fun reduce(
             defaultState: WatchListViewState,
-            oldState: WatchListViewState
+            oldState: WatchListViewState,
         ): WatchListViewState {
             return oldState.copy(
-                media = media
+                media = media,
             )
         }
     }
 
-    data class ChangeMediaType(val mediaType: MediaType):WatchListResult(){
+    data class ChangeMediaType(val mediaType: MediaType) : WatchListResult() {
         override fun reduce(
             defaultState: WatchListViewState,
-            oldState: WatchListViewState
+            oldState: WatchListViewState,
         ): WatchListViewState {
             return oldState.copy(
-                mediaType = mediaType
+                mediaType = mediaType,
             )
         }
     }
-
-
 }

@@ -4,28 +4,26 @@ import com.besha.shinobihub.appcore.domain.model.MediaType
 import com.besha.shinobihub.appcore.mvi.MediaViewState
 import com.besha.shinobihub.appcore.mvi.Result
 
-sealed class FavouriteResult():Result<FavouriteViewState> {
-
-
-    data class MediaLoaded(val media:MediaViewState): FavouriteResult() {
+sealed class FavouriteResult() : Result<FavouriteViewState> {
+    data class MediaLoaded(val media: MediaViewState) : FavouriteResult() {
         override fun reduce(
             defaultState: FavouriteViewState,
-            oldState: FavouriteViewState
+            oldState: FavouriteViewState,
         ): FavouriteViewState {
             return oldState.copy(
-                media = media
+                media = media,
             )
         }
     }
 
-        data class ChangeMediaType(val mediaType: MediaType):FavouriteResult(){
-            override fun reduce(
-                defaultState: FavouriteViewState,
-                oldState: FavouriteViewState
-            ): FavouriteViewState {
-                return oldState.copy(
-                    mediaType = mediaType
-                )
-            }
+    data class ChangeMediaType(val mediaType: MediaType) : FavouriteResult() {
+        override fun reduce(
+            defaultState: FavouriteViewState,
+            oldState: FavouriteViewState,
+        ): FavouriteViewState {
+            return oldState.copy(
+                mediaType = mediaType,
+            )
         }
+    }
 }

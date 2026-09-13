@@ -8,5 +8,5 @@ data class Season(
     val overview: String,
     val poster_path: String,
     val season_number: Int,
-    val vote_average: Double
+    val vote_average: Double,
 )

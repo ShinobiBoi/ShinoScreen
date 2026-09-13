@@ -25,45 +25,48 @@ import com.besha.shinobihub.R
 import com.besha.shinobihub.appcore.domain.model.MediaType
 
 @Composable
-fun MediumPosterItem(title: String?, posterPath: String?, mediaType: MediaType, mediaId:Int, onItemClick: (Int, MediaType) -> Unit) {
-
-    Column (modifier = Modifier.clickable(
-        onClick = {
-            if (!posterPath.isNullOrEmpty()){
-                onItemClick(mediaId,mediaType)
-            }
-        }
-    )){
+fun MediumPosterItem(
+    title: String?,
+    posterPath: String?,
+    mediaType: MediaType,
+    mediaId: Int,
+    onItemClick: (Int, MediaType) -> Unit,
+) {
+    Column(
+        modifier =
+            Modifier.clickable(
+                onClick = {
+                    if (!posterPath.isNullOrEmpty()) {
+                        onItemClick(mediaId, mediaType)
+                    }
+                },
+            ),
+    ) {
         Card(
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         ) {
             AsyncImage(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .size(width = 184.dp, height = 244.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                ,
+                modifier =
+                    Modifier
+                        .background(Color.Transparent)
+                        .size(width = 184.dp, height = 244.dp)
+                        .clip(RoundedCornerShape(10.dp)),
                 model = "https://image.tmdb.org/t/p/w500${posterPath ?: ""}",
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
-
-
-                )
+            )
         }
         Text(
-            modifier = Modifier.width(115.dp)
-                .background(Color.Transparent)
-                .padding(top = 10.dp)
-                .basicMarquee(),
+            modifier =
+                Modifier.width(115.dp)
+                    .background(Color.Transparent)
+                    .padding(top = 10.dp)
+                    .basicMarquee(),
             text = title ?: "",
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
-            color = colorResource(R.color.gray)
+            color = colorResource(R.color.gray),
         )
-
-
     }
-
-
 }

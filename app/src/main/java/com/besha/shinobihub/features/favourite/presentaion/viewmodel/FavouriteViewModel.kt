@@ -15,66 +15,73 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 @HiltViewModel
-class FavouriteViewModel @Inject constructor(
-    private val getMovieFavouriteUseCase: GetMovieFavouriteUseCase,
-    private val getTvFavouriteUseCase: GetTvFavouriteUseCase,
-    private val sessionManager: SessionManager
-) : MVIBaseViewModel<FavouriteAction, FavouriteResult, FavouriteViewState>() {
+class FavouriteViewModel
+    @Inject
+    constructor(
+        private val getMovieFavouriteUseCase: GetMovieFavouriteUseCase,
+        private val getTvFavouriteUseCase: GetTvFavouriteUseCase,
+        private val sessionManager: SessionManager,
+    ) : MVIBaseViewModel<FavouriteAction, FavouriteResult, FavouriteViewState>() {
+        override val defaultViewState: FavouriteViewState
+            get() = FavouriteViewState()
 
-    override val defaultViewState: FavouriteViewState
-        get() = FavouriteViewState()
+        override fun handleAction(action: FavouriteAction): Flow<FavouriteResult> =
+            flow {
+                when (action) {
+                    is FavouriteAction.GetMovieFavourite -> {
+                        handleGetMediaFavourite(this) {
+                            val sessionId = sessionManager.getSessionId().firstOrNull()
+                            val accountId = sessionManager.getAccountId().firstOrNull()
+                            if (sessionId != null && accountId != null) {
+                                getMovieFavouriteUseCase(accountId, sessionId)
+                            } else {
+                                DataState.Error(Throwable("Missing session or account ID"))
+                            }
+                        }
+                    }
 
-    override fun handleAction(action: FavouriteAction): Flow<FavouriteResult> = flow {
-        when (action) {
-            is FavouriteAction.GetMovieFavourite -> {
-                handleGetMediaFavourite(this) {
-                    val sessionId = sessionManager.getSessionId().firstOrNull()
-                    val accountId = sessionManager.getAccountId().firstOrNull()
-                    if (sessionId != null && accountId != null)
-                        getMovieFavouriteUseCase(accountId, sessionId)
-                    else
-                        DataState.Error(Throwable("Missing session or account ID"))
+                    is FavouriteAction.GetTvFavourite -> {
+                        handleGetMediaFavourite(this) {
+                            val sessionId = sessionManager.getSessionId().firstOrNull()
+                            val accountId = sessionManager.getAccountId().firstOrNull()
+                            if (sessionId != null && accountId != null) {
+                                getTvFavouriteUseCase(accountId, sessionId)
+                            } else {
+                                DataState.Error(Throwable("Missing session or account ID"))
+                            }
+                        }
+                    }
+
+                    is FavouriteAction.ChangeMediaType -> {
+                        emit(FavouriteResult.ChangeMediaType(action.mediaType))
+                    }
                 }
             }
 
-            is FavouriteAction.GetTvFavourite -> {
-                handleGetMediaFavourite(this) {
-                    val sessionId = sessionManager.getSessionId().firstOrNull()
-                    val accountId = sessionManager.getAccountId().firstOrNull()
-                    if (sessionId != null && accountId != null)
-                        getTvFavouriteUseCase(accountId, sessionId)
-                    else
-                        DataState.Error(Throwable("Missing session or account ID"))
-                }
-            }
+        private suspend fun handleGetMediaFavourite(
+            flowCollector: FlowCollector<FavouriteResult>,
+            getFavouriteMedia: suspend () -> DataState<List<MediaItem>>,
+        ) {
+            // emit loading state
+            flowCollector.emit(FavouriteResult.MediaLoaded(MediaViewState(isLoading = true)))
 
-            is FavouriteAction.ChangeMediaType -> {
-                emit(FavouriteResult.ChangeMediaType(action.mediaType))
+            when (val result = getFavouriteMedia()) {
+                is DataState.Success ->
+                    flowCollector.emit(
+                        FavouriteResult.MediaLoaded(MediaViewState(data = result.data, isSuccess = true)),
+                    )
+
+                is DataState.Error ->
+                    flowCollector.emit(
+                        FavouriteResult.MediaLoaded(MediaViewState(errorThrowable = result.throwable)),
+                    )
+
+                is DataState.Empty ->
+                    flowCollector.emit(
+                        FavouriteResult.MediaLoaded(MediaViewState(isEmpty = true)),
+                    )
+
+                else -> {}
             }
         }
     }
-
-    private suspend fun handleGetMediaFavourite(
-        flowCollector: FlowCollector<FavouriteResult>,
-        getFavouriteMedia: suspend () -> DataState<List<MediaItem>>
-    ) {
-        // emit loading state
-        flowCollector.emit(FavouriteResult.MediaLoaded(MediaViewState(isLoading = true)))
-
-        when (val result = getFavouriteMedia()) {
-            is DataState.Success -> flowCollector.emit(
-                FavouriteResult.MediaLoaded(MediaViewState(data = result.data, isSuccess = true))
-            )
-
-            is DataState.Error -> flowCollector.emit(
-                FavouriteResult.MediaLoaded(MediaViewState(errorThrowable = result.throwable))
-            )
-
-            is DataState.Empty -> flowCollector.emit(
-                FavouriteResult.MediaLoaded(MediaViewState(isEmpty = true))
-            )
-
-            else -> {}
-        }
-    }
-}

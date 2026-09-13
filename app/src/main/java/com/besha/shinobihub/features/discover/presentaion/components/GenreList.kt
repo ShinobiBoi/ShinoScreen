@@ -19,48 +19,53 @@ import androidx.compose.ui.unit.sp
 import com.besha.shinobihub.R
 import com.besha.shinobihub.appcore.data.model.genre.Genre
 
-
 @Composable
 fun GenreList(
     genreList: List<Genre>,
-    cardClick: (genreId: Int) -> Unit
+    cardClick: (genreId: Int) -> Unit,
 ) {
-
-    val sortedList = remember(genreList) {
-        genreList.sortedByDescending { it.selected }
-    }
+    val sortedList =
+        remember(genreList) {
+            genreList.sortedByDescending { it.selected }
+        }
 
     LazyRow(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 14.dp),
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
+        horizontalArrangement = Arrangement.spacedBy(15.dp),
     ) {
         items(sortedList) {
-
             Card(
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (it.selected) colorResource(R.color.black) else colorResource(
-                        R.color.light_gray
-                    )
-                ),
-                onClick = { cardClick(it.id!!) }
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor =
+                            if (it.selected) {
+                                colorResource(R.color.black)
+                            } else {
+                                colorResource(
+                                    R.color.light_gray,
+                                )
+                            },
+                    ),
+                onClick = { cardClick(it.id!!) },
             ) {
                 Text(
-                    text = it.name?:"",
+                    text = it.name ?: "",
                     color = if (it.selected) colorResource(R.color.white) else colorResource(R.color.gray),
                     fontSize = 18.sp,
-                    modifier = Modifier.padding(
-                        start = 20.dp,
-                        end = 20.dp,
-                        top = 5.dp,
-                        bottom = 5.dp
-                    )
+                    modifier =
+                        Modifier.padding(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 5.dp,
+                            bottom = 5.dp,
+                        ),
                 )
             }
         }
-
     }
 }

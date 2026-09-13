@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.besha.shinobihub.R
 
-
 @Composable
 fun ExpandableText(
     text: String,
@@ -30,7 +29,7 @@ fun ExpandableText(
     minimizedMaxLines: Int = 3, // 👈 use lines instead of characters
     expandText: String = "Show more",
     collapseText: String = "Show less",
-    linkColor: Color = colorResource(R.color.dark_blue)
+    linkColor: Color = colorResource(R.color.dark_blue),
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isTextOverflowing by remember { mutableStateOf(false) }
@@ -44,7 +43,7 @@ fun ExpandableText(
             onTextLayout = { textLayoutResult ->
                 // Detect if text doesn't fit in given maxLines
                 isTextOverflowing = textLayoutResult.hasVisualOverflow
-            }
+            },
         )
 
         if (isTextOverflowing || expanded) {
@@ -54,9 +53,10 @@ fun ExpandableText(
                 color = linkColor,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .clickable { expanded = !expanded }
-                    .padding(vertical = 2.dp)
+                modifier =
+                    Modifier
+                        .clickable { expanded = !expanded }
+                        .padding(vertical = 2.dp),
             )
         }
     }

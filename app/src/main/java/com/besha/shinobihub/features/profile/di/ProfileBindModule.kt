@@ -9,20 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ProfileBindModule {
-
-
     @Binds
     abstract fun bindProfileRemoteClient(profileRemoteClientImp: ProfileRemoteClientImp): ProfileRemoteClient
 
     @Binds
     abstract fun bindProfileRepo(profileRepoImp: ProfileRepoImp): ProfileRepo
-
-
-
-
-
 }

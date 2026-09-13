@@ -7,19 +7,20 @@ import com.besha.shinobihub.appcore.domain.DataState
 import com.besha.shinobihub.features.favourite.domain.remote.FavouriteRemoteClient
 import javax.inject.Inject
 
-class FavouriteRemoteClientImp @Inject constructor(private val api: ApiServices) : FavouriteRemoteClient {
-    override suspend fun getMovieFavourite(
-        accountId: Int,
-        sessionId: String
-    ): DataState<MediaResponse> {
-        return api.getFavoriteMovies(accountId, sessionId).toDataState()
-    }
+class FavouriteRemoteClientImp
+    @Inject
+    constructor(private val api: ApiServices) : FavouriteRemoteClient {
+        override suspend fun getMovieFavourite(
+            accountId: Int,
+            sessionId: String,
+        ): DataState<MediaResponse> {
+            return api.getFavoriteMovies(accountId, sessionId).toDataState()
+        }
 
-    override suspend fun getTvFavourite(
-        accountId: Int,
-        sessionId: String
-    ): DataState<MediaResponse> {
-       return api.getFavoriteTv(accountId,sessionId).toDataState()
+        override suspend fun getTvFavourite(
+            accountId: Int,
+            sessionId: String,
+        ): DataState<MediaResponse> {
+            return api.getFavoriteTv(accountId, sessionId).toDataState()
+        }
     }
-
-}

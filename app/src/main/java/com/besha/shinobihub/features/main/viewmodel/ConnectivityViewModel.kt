@@ -9,9 +9,12 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class ConnectivityViewModel @Inject constructor(
-    observer: ConnectivityObserver
-) : ViewModel() {
-    val isConnected = observer.isConnected
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
-}
+class ConnectivityViewModel
+    @Inject
+    constructor(
+        observer: ConnectivityObserver,
+    ) : ViewModel() {
+        val isConnected =
+            observer.isConnected
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    }

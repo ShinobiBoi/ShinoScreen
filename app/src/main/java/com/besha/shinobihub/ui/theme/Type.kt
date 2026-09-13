@@ -9,14 +9,16 @@ import androidx.compose.ui.unit.sp
 import com.besha.shinobihub.R
 
 // Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
+val Typography =
+    Typography(
+        bodyLarge =
+            TextStyle(
+                fontFamily = FontFamily.Default,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                letterSpacing = 0.5.sp,
+            ),
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -32,12 +34,14 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     )
-    */
-)
-val poppinsFamily = FontFamily(
-    Font(R.font.poppins_regular, FontWeight.Normal),
-)
+     */
+    )
+val poppinsFamily =
+    FontFamily(
+        Font(R.font.poppins_regular, FontWeight.Normal),
+    )
 
-val germaniaOneFamily= FontFamily(
-    Font(R.font.germaniaone_regular, FontWeight.Normal),
-)
+val germaniaOneFamily =
+    FontFamily(
+        Font(R.font.germaniaone_regular, FontWeight.Normal),
+    )
