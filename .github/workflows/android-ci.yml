@@ -26,6 +26,9 @@ jobs:
       - name: Set execute permissions for Gradle
         run: chmod +x gradlew
 
+      - name: Create local.properties
+        run: echo "API_KEY=${{ secrets.API_KEY }}" >> local.properties
+
       - name: Run ktlintCheck
         run: ./gradlew ktlintCheck
   build:
