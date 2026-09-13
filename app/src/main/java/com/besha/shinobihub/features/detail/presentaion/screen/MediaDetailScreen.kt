@@ -133,6 +133,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
             1 -> Toast.makeText(context, "Item added successfully", Toast.LENGTH_SHORT).show()
             13 -> Toast.makeText(context, "Item removed successfully", Toast.LENGTH_SHORT).show()
         }
+        viewModel.executeAction(DetailActions.ResetToggleCode)
     }
 
 
@@ -432,25 +433,28 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 .padding(3.dp),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            DetailTab.entries.filter { tab ->
-                                // Show "Seasons" only for TV media type
-                                mediaType == MediaType.Tv || tab != DetailTab.SEASONS
-                            }.forEach { tab ->
+
+                            if (mediaType != MediaType.People) {
+                                DetailTab.entries.filter { tab ->
+                                    // Show "Seasons" only for TV media type
+                                    mediaType == MediaType.Tv || tab != DetailTab.SEASONS
+                                }.forEach { tab ->
 
 
-                                TabItem(
-                                    label = tab.label,
-                                    isSelected = selectedTab == tab,
-                                    onClick = {
-                                        viewModel.executeAction(
-                                            DetailActions.SwitchTab(
-                                                tab
+                                    TabItem(
+                                        label = tab.label,
+                                        isSelected = selectedTab == tab,
+                                        onClick = {
+                                            viewModel.executeAction(
+                                                DetailActions.SwitchTab(
+                                                    tab
+                                                )
                                             )
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                )
+                                        },
+                                        modifier = Modifier
+                                            .weight(1f)
+                                    )
+                                }
                             }
 
                         }

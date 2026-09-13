@@ -190,13 +190,13 @@ fun ProfileScreen(rootController: NavController, childController: NavController)
                 ) {
                     childController.navigate(ScreenResources.AboutScreenRoute)
                 }
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = colorResource(R.color.gray).copy(alpha = 0.1f))
+/*                HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = colorResource(R.color.gray).copy(alpha = 0.1f))
                 SettingRow(
                     title = "Invite a friend",
                     icon = Icons.Default.PersonAdd
                 ) {
                     // Logic for sharing can be added here
-                }
+                }*/
             }
         }
 

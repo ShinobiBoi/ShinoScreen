@@ -184,7 +184,9 @@ class DetailViewModel @Inject constructor(
                         DataState.Error(Throwable("Missing session or account ID"))
                 }
             }
-
+            DetailActions.ResetToggleCode -> {
+                emit(DetailResults.ToggleCodeResult(0))
+            }
 
         }
 

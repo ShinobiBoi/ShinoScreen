@@ -22,6 +22,8 @@ sealed class DetailActions : Action{
     data class GetTvAccountState(val tvId: Int):DetailActions()
     data class ToggleFavorite(val markRequest: MarkRequest):DetailActions()
     data class ToggleWatchList(val markRequest: MarkRequest):DetailActions()
+
+    object ResetToggleCode:DetailActions()
     object GetSessionId:DetailActions()
 }
 

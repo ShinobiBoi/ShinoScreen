@@ -91,7 +91,7 @@ fun SplashScreen(
 
         ) {
             Text(
-                text = "ShinobiHub",
+                text = "Shino Screen",
                 fontFamily = germaniaOneFamily,
                 color = Color.White,
                 fontSize = 30.sp

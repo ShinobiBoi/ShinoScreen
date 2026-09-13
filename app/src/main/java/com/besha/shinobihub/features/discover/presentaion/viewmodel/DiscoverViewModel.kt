@@ -114,7 +114,7 @@ class DiscoverViewModel @Inject constructor(
         when (val dataState = getGenreListUseCase()) {
 
             is DataState.Success -> {
-                flowCollector.emit(DiscoverResult.GenreList(CommonViewState(data = dataState.data)))
+                flowCollector.emit(DiscoverResult.GenreList(CommonViewState(data = dataState.data,isSuccess = true)))
 
             }
 

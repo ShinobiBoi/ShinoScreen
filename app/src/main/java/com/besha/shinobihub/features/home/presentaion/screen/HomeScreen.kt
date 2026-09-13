@@ -140,7 +140,7 @@ fun HomeScreen(controller: NavController) {
                 modifier = Modifier.padding(start = 13.dp, top = 10.dp)
             )
 
-            HomeGenreList(){
+            HomeGenreList{
                 controller.navigate(ScreenResources.DiscoverScreenRoute(it))
             }
 

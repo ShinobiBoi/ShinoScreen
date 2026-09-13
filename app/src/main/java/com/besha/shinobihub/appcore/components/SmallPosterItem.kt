@@ -1,5 +1,6 @@
 package com.besha.shinobihub.appcore.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -26,33 +28,50 @@ import com.besha.shinobihub.appcore.domain.model.MediaType
 
 
 @Composable
-fun SmallPosterItem( title: String?,posterPath: String?,mediaType: MediaType,mediaId:Int,onItemClick: (Int,MediaType) -> Unit) {
+fun SmallPosterItem(
+    title: String?,
+    posterPath: String?,
+    mediaType: MediaType,
+    mediaId: Int,
+    onItemClick: (Int, MediaType) -> Unit
+) {
 
-    Column (modifier = Modifier.clickable(
+    Column(
+        modifier = Modifier.clickable(
         onClick = {
-            if (!posterPath.isNullOrEmpty()){
-                onItemClick(mediaId,mediaType)
+            if (!posterPath.isNullOrEmpty()) {
+                onItemClick(mediaId, mediaType)
             }
         }
-    )){
+    )) {
         Card(
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         ) {
-            AsyncImage(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .size(width = 115.dp, height = 156.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                ,
-                model = "https://image.tmdb.org/t/p/w500${posterPath ?: ""}",
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-
-
+            if (posterPath.isNullOrEmpty()) {
+                Image(
+                    painter = painterResource(R.drawable.no_image_ic),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(width = 115.dp, height = 156.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
                 )
+            } else {
+                AsyncImage(
+                    model = "https://image.tmdb.org/t/p/w500$posterPath",
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(width = 115.dp, height = 156.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.no_image_ic),
+                    error = painterResource(R.drawable.no_image_ic)
+                )
+            }
         }
         Text(
-            modifier = Modifier.width(115.dp)
+            modifier = Modifier
+                .width(115.dp)
                 .background(Color.Transparent)
                 .padding(top = 10.dp)
                 .basicMarquee(),
