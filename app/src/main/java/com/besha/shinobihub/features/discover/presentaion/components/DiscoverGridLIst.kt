@@ -20,22 +20,17 @@ import com.besha.shinobihub.R
 import com.besha.shinobihub.appcore.domain.model.MediaType
 import com.besha.shinobihub.appcore.mvi.MediaViewState
 
-
 @Composable
 fun DiscoverGridLIst(
     state: MediaViewState,
     modifier: Modifier = Modifier,
     onItemClick: (Int, MediaType) -> Unit,
 ) {
-
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
-
-
         when {
             state.isLoading -> {
                 CircularProgressIndicator()
@@ -46,7 +41,7 @@ fun DiscoverGridLIst(
                     text = "It's empty here!",
                     color = colorResource(R.color.gray),
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
             }
 
@@ -56,7 +51,7 @@ fun DiscoverGridLIst(
                     modifier = modifier.fillMaxSize(),
                     contentPadding = PaddingValues(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(state.data) { poster ->
 
@@ -65,9 +60,8 @@ fun DiscoverGridLIst(
                             poster.resolvedPoster,
                             poster.media_type,
                             poster.id,
-                            onItemClick
+                            onItemClick,
                         )
-
                     }
                 }
             }

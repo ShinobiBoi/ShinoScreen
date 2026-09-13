@@ -32,26 +32,21 @@ import com.besha.shinobihub.features.splash.presentation.viewmodel.SplashViewMod
 import com.besha.shinobihub.ui.theme.germaniaOneFamily
 import kotlinx.coroutines.delay
 
-
 @Composable
 fun SplashScreen(
     rootController: NavController,
     childController: NavController,
     mediaId: Int,
-    mediaType: MediaType?
+    mediaType: MediaType?,
 ) {
-
-
     val splashViewModel = hiltViewModel<SplashViewModel>()
     val state by splashViewModel.viewStates.collectAsState()
-
 
     LaunchedEffect(state.sessionId) {
         splashViewModel.executeAction(SplashAction.GetSessionId)
         delay(2500)
 
         if (state.sessionId.isNullOrEmpty()) {
-
             if (mediaId != -1) {
                 rootController.navigate(ScreenResources.MainScreeRoute(mediaId, mediaType)) {
                     popUpTo(ScreenResources.AuthScreenRoute) { inclusive = true }
@@ -71,45 +66,40 @@ fun SplashScreen(
         }
     }
 
-
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black),
     ) {
-
         Image(
             painter = painterResource(id = R.drawable.splash),
             contentDescription = "Splash Screen",
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
 
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = "Shino Screen",
                 fontFamily = germaniaOneFamily,
                 color = Color.White,
-                fontSize = 30.sp
+                fontSize = 30.sp,
             )
 
             Image(
                 painter = painterResource(id = R.drawable.shinobihub),
                 contentDescription = "Logo",
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .clip(RoundedCornerShape(5.dp))
-                    .border(2.dp, Color.White)
-                    .size(40.dp)
-
+                modifier =
+                    Modifier
+                        .padding(start = 8.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                        .border(2.dp, Color.White)
+                        .size(40.dp),
             )
         }
-
     }
-
-
 }

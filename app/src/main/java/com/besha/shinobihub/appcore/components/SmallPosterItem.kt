@@ -26,24 +26,24 @@ import coil.compose.AsyncImage
 import com.besha.shinobihub.R
 import com.besha.shinobihub.appcore.domain.model.MediaType
 
-
 @Composable
 fun SmallPosterItem(
     title: String?,
     posterPath: String?,
     mediaType: MediaType,
     mediaId: Int,
-    onItemClick: (Int, MediaType) -> Unit
+    onItemClick: (Int, MediaType) -> Unit,
 ) {
-
     Column(
-        modifier = Modifier.clickable(
-        onClick = {
-            if (!posterPath.isNullOrEmpty()) {
-                onItemClick(mediaId, mediaType)
-            }
-        }
-    )) {
+        modifier =
+            Modifier.clickable(
+                onClick = {
+                    if (!posterPath.isNullOrEmpty()) {
+                        onItemClick(mediaId, mediaType)
+                    }
+                },
+            ),
+    ) {
         Card(
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         ) {
@@ -51,43 +51,38 @@ fun SmallPosterItem(
                 Image(
                     painter = painterResource(R.drawable.no_image_ic),
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(width = 115.dp, height = 156.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                    contentScale = ContentScale.Crop
+                    modifier =
+                        Modifier
+                            .size(width = 115.dp, height = 156.dp)
+                            .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop,
                 )
             } else {
                 AsyncImage(
                     model = "https://image.tmdb.org/t/p/w500$posterPath",
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(width = 115.dp, height = 156.dp)
-                        .clip(RoundedCornerShape(10.dp)),
+                    modifier =
+                        Modifier
+                            .size(width = 115.dp, height = 156.dp)
+                            .clip(RoundedCornerShape(10.dp)),
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(R.drawable.no_image_ic),
-                    error = painterResource(R.drawable.no_image_ic)
+                    error = painterResource(R.drawable.no_image_ic),
                 )
             }
         }
         Text(
-            modifier = Modifier
-                .width(115.dp)
-                .background(Color.Transparent)
-                .padding(top = 10.dp)
-                .basicMarquee(),
+            modifier =
+                Modifier
+                    .width(115.dp)
+                    .background(Color.Transparent)
+                    .padding(top = 10.dp)
+                    .basicMarquee(),
             text = title ?: "",
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
-            color = colorResource(R.color.gray)
+            color = colorResource(R.color.gray),
         )
-
-
     }
-
-
 }
-
-
-
-

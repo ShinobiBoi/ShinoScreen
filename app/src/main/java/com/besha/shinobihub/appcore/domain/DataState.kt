@@ -3,8 +3,7 @@ package com.besha.shinobihub.appcore.domain
 sealed class DataState<out T>(
     val loading: Boolean,
     private val data: T? = null,
-    private val code: Int? = null
-
+    private val code: Int? = null,
 ) {
     fun data(): T? = data
 
@@ -12,18 +11,18 @@ sealed class DataState<out T>(
 
     class Loading<T>(val cachedData: T? = null) : DataState<T>(
         loading = true,
-        data = cachedData
+        data = cachedData,
     )
 
     class Error<T>(val throwable: Throwable, val code: Int = 400) : DataState<T>(
         loading = false,
         code = code,
-        data = null
+        data = null,
     )
 
     data class Success<out T>(val data: T) : DataState<T>(
         loading = false,
-        data = data
+        data = data,
     )
 
     object Empty : DataState<Nothing>(false)

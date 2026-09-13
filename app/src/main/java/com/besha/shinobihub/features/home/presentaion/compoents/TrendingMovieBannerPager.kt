@@ -39,7 +39,7 @@ import kotlinx.coroutines.delay
 fun TrendingMovieBannerPager(
     mediaItems: List<MediaItem>,
     pagerState: PagerState,
-    onItemClick: (Int,MediaType) -> Unit
+    onItemClick: (Int, MediaType) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
@@ -48,7 +48,7 @@ fun TrendingMovieBannerPager(
         while (true) {
             val currentPage = pagerState.currentPage
             delay(5000)
-            if (mediaItems.isNotEmpty()&&currentPage==pagerState.currentPage) {
+            if (mediaItems.isNotEmpty() && currentPage == pagerState.currentPage) {
                 val nextPage = (pagerState.currentPage + 1) % mediaItems.size
                 pagerState.animateScrollToPage(nextPage)
             }
@@ -58,78 +58,84 @@ fun TrendingMovieBannerPager(
     // ---- The pager with overlay text ----
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) { page ->
         val mediaItem = mediaItems[page]
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(screenHeight * 0.3f)
-                .padding(horizontal = 13.dp, vertical = 24.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .clickable(
-                    onClick = {onItemClick(mediaItem.id,mediaItem.media_type)}
-                )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(screenHeight * 0.3f)
+                    .padding(horizontal = 13.dp, vertical = 24.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable(
+                        onClick = { onItemClick(mediaItem.id, mediaItem.media_type) },
+                    ),
         ) {
             // Movie image
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/original${mediaItem.backdrop_path}",
                 contentDescription = mediaItem.resolvedTitle,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize()
+                modifier = Modifier.matchParentSize(),
             )
 
             // Gradient overlay (for better text visibility)
             Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black),
-                        )
-                    )
+                modifier =
+                    Modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color.Black),
+                            ),
+                        ),
             )
 
             // Text overlay (title + tag)
             Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(16.dp),
             ) {
                 Text(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(colorResource(R.color.light_blue))
-                        .padding(4.dp),
+                    modifier =
+                        Modifier
+                            .clip(RoundedCornerShape(15.dp))
+                            .background(colorResource(R.color.light_blue))
+                            .padding(4.dp),
                     text = "Trending Now",
                     color = colorResource(R.color.white),
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 Text(
-                    text = mediaItem.resolvedTitle?:"",
+                    text = mediaItem.resolvedTitle ?: "",
                     color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Clip,
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.basicMarquee()
+                    modifier = Modifier.basicMarquee(),
                 )
 
                 val currentPage = pagerState.currentPage
                 Row(
                     horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
                 ) {
                     repeat(mediaItems.size) { index ->
                         val isSelected = currentPage == index
                         Box(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .size(if (isSelected) 10.dp else 8.dp)
-                                .clip(RoundedCornerShape(50))
-                                .background(if (isSelected) colorResource(R.color.white) else colorResource(R.color.gray))
+                            modifier =
+                                Modifier
+                                    .padding(4.dp)
+                                    .size(if (isSelected) 10.dp else 8.dp)
+                                    .clip(RoundedCornerShape(50))
+                                    .background(if (isSelected) colorResource(R.color.white) else colorResource(R.color.gray)),
                         )
                     }
                 }

@@ -7,10 +7,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
 
-
-    //dagger hilt
+    // dagger hilt
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.gms.google.services)
+
 }
 
 android {
@@ -26,8 +26,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-
-        android.buildFeatures.buildConfig=true
+        android.buildFeatures.buildConfig = true
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
@@ -44,7 +43,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -65,15 +64,13 @@ android {
 
 dependencies {
 
-    implementation (libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.coil)
 
-
     implementation(libs.core)
 
-    implementation (libs.androidx.datastore.preferences)
-
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.foundation) // or latest
 
@@ -81,25 +78,21 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-
     implementation(libs.kotlinx.serialization.json)
-
-
 
     // Dagger Hilt
     implementation(libs.hilt.android)
     implementation(libs.firebase.messaging)
     ksp(libs.hilt.compiler)
 
-
     implementation(libs.hilt.navigation.compose)
 
-    //retrofit
-    implementation (libs.gson)
+    // retrofit
+    implementation(libs.gson)
     implementation(libs.retrofit)
-    implementation (libs.converter.gson)
+    implementation(libs.converter.gson)
 
-    //coil
+    // coil
     implementation(libs.coil.compose)
 
     implementation(libs.glide)
@@ -108,9 +101,6 @@ dependencies {
     testImplementation(libs.mockk)
 
     implementation(libs.androidx.material.icons.extended)
-
-
-
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -130,7 +120,4 @@ dependencies {
 
     testImplementation(libs.turbine)
     testImplementation(libs.truth)
-
-
-
 }

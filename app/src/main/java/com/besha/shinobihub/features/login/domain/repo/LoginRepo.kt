@@ -7,10 +7,9 @@ import com.besha.shinobihub.features.login.data.model.session.SessionRequest
 import com.besha.shinobihub.features.login.data.model.token.TokenResponse
 
 interface LoginRepo {
-
     suspend fun login(loginRequest: LoginRequest): DataState<LoginResponse>
 
-    suspend fun createToken():DataState<TokenResponse>
+    suspend fun createToken(): DataState<TokenResponse>
 
     suspend fun createSession(sessionRequest: SessionRequest): DataState<String>
 }

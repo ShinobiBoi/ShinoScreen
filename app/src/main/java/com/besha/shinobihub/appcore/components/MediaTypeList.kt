@@ -1,6 +1,5 @@
 package com.besha.shinobihub.appcore.components
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,42 +20,44 @@ import com.besha.shinobihub.appcore.domain.model.MediaType
 @Composable
 fun MediaTypeList(
     mediaType: MediaType,
-    cardClick: (type: MediaType) -> Unit
+    cardClick: (type: MediaType) -> Unit,
 ) {
-
-
-
-
     LazyRow(
-        modifier = Modifier
-            .fillMaxWidth().padding(horizontal = 13.dp),
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth().padding(horizontal = 13.dp),
+        horizontalArrangement = Arrangement.spacedBy(15.dp),
     ) {
         items(MediaType.entries) {
-
             Card(
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (it == mediaType) colorResource(R.color.black) else colorResource(
-                        R.color.light_gray
-                    )
-                ),
-                onClick = { cardClick(it) }
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor =
+                            if (it == mediaType) {
+                                colorResource(R.color.black)
+                            } else {
+                                colorResource(
+                                    R.color.light_gray,
+                                )
+                            },
+                    ),
+                onClick = { cardClick(it) },
             ) {
                 Text(
-                    text = if (it==MediaType.Tv)"Tv series" else it.name,
+                    text = if (it == MediaType.Tv)"Tv series" else it.name,
                     color = if (it == mediaType) colorResource(R.color.white) else colorResource(R.color.gray),
                     fontSize = 18.sp,
-                    modifier = Modifier.padding(
-                        start = 20.dp,
-                        end = 20.dp,
-                        top = 5.dp,
-                        bottom = 5.dp
-                    )
+                    modifier =
+                        Modifier.padding(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 5.dp,
+                            bottom = 5.dp,
+                        ),
                 )
             }
         }
-
     }
 }

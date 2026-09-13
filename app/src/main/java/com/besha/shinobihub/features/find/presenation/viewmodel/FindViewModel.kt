@@ -23,145 +23,142 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-
 @HiltViewModel
-class FindViewModel @Inject constructor(
-    val getTrendingAllUseCase: GetTrendingAllUseCase,
-    val getTrendingMoviesUseCase: GetTrendingMoviesUseCase,
-    val getTrendingTvUseCase: GetTrendingTvUseCase,
-    val getTrendingPeopleUseCase: GetTrendingPeopleUseCase,
-    val searchMultiUseCase: SearchMultiUseCase,
-    val searchMovieUseCase: SearchMovieUseCase,
-    val searchTvUseCase: SearchTvUseCase,
-    val searchPeopleUseCase: SearchPeopleUseCase,
-    val getGenreListUseCase: GetGenreListUseCase,
-    val apiServices: ApiServices
+class FindViewModel
+    @Inject
+    constructor(
+        val getTrendingAllUseCase: GetTrendingAllUseCase,
+        val getTrendingMoviesUseCase: GetTrendingMoviesUseCase,
+        val getTrendingTvUseCase: GetTrendingTvUseCase,
+        val getTrendingPeopleUseCase: GetTrendingPeopleUseCase,
+        val searchMultiUseCase: SearchMultiUseCase,
+        val searchMovieUseCase: SearchMovieUseCase,
+        val searchTvUseCase: SearchTvUseCase,
+        val searchPeopleUseCase: SearchPeopleUseCase,
+        val getGenreListUseCase: GetGenreListUseCase,
+        val apiServices: ApiServices,
     ) : MVIBaseViewModel<FindAction, FindResult, FindViewState>() {
-    override val defaultViewState: FindViewState
-        get() = FindViewState()
+        override val defaultViewState: FindViewState
+            get() = FindViewState()
 
-    override fun handleAction(action: FindAction): Flow<FindResult> = flow {
+        override fun handleAction(action: FindAction): Flow<FindResult> =
+            flow {
+                when (action) {
+                    is FindAction.GetGenreList -> {
+                        handleGetGenreList(this)
+                    }
 
-        when (action) {
+                    is FindAction.ToggleGenre -> {
+                        handleToggleGenre(this, action.genre)
+                    }
 
-            is FindAction.GetGenreList -> {
-                handleGetGenreList(this)
-            }
+                    is FindAction.ChangeMediaType -> {
+                        emit(FindResult.Type(action.type))
+                    }
 
-            is FindAction.ToggleGenre -> {
-                handleToggleGenre(this, action.genre)
-            }
+                    is FindAction.ChangeQuery -> {
+                        emit(FindResult.QueryChanged(CommonViewState(data = action.query)))
+                    }
 
-            is FindAction.ChangeMediaType -> {
-                emit(FindResult.Type( action.type))
-            }
+                    // -------- Trending --------
+                    is FindAction.GetTrendingAll -> {
+                        handleNewMedia(this, action.filterList) {
+                            getTrendingAllUseCase(it)
+                        }
+                    }
 
-            is FindAction.ChangeQuery -> {
-                emit(FindResult.QueryChanged(CommonViewState(data = action.query)))
-            }
+                    is FindAction.GetTrendingMovies -> {
+                        handleNewMedia(this, action.filterList) {
+                            getTrendingMoviesUseCase(it)
+                        }
+                    }
 
-            // -------- Trending --------
-            is FindAction.GetTrendingAll -> {
-                handleNewMedia(this, action.filterList) {
-                    getTrendingAllUseCase(it)
+                    is FindAction.GetTrendingTv -> {
+                        handleNewMedia(this, action.filterList) {
+                            getTrendingTvUseCase(it)
+                        }
+                    }
+
+                    is FindAction.GetTrendingPeople -> {
+                        handleNewMedia(this, action.filterList) {
+                            getTrendingPeopleUseCase(it)
+                        }
+                    }
+
+                    // -------- Search --------
+                    is FindAction.SearchMulti -> {
+                        handleNewMedia(this, action.filterList) {
+                            searchMultiUseCase(action.query, it)
+                        }
+                    }
+
+                    is FindAction.SearchMovie -> {
+                        handleNewMedia(this, action.filterList) {
+                            searchMovieUseCase(action.query, it)
+                        }
+                    }
+
+                    is FindAction.SearchTv -> {
+                        handleNewMedia(this, action.filterList) {
+                            searchTvUseCase(action.query, it)
+                        }
+                    }
+
+                    is FindAction.SearchPeople -> {
+                        handleNewMedia(this, action.filterList) {
+                            searchPeopleUseCase(action.query, it)
+                        }
+                    }
+                    is FindAction.ClearFilters -> {
+                        handleClearFilter(this)
+                    }
                 }
             }
 
-            is FindAction.GetTrendingMovies -> {
-                handleNewMedia(this, action.filterList) {
-                    getTrendingMoviesUseCase(it)
+        private suspend fun handleClearFilter(flowCollector: FlowCollector<FindResult>) {
+            val updatedGenres =
+                viewStates.value.genres.data?.map {
+                    it.copy(selected = false)
                 }
-            }
 
-            is FindAction.GetTrendingTv -> {
-                handleNewMedia(this, action.filterList) {
-                    getTrendingTvUseCase(it)
-                }
-            }
+            flowCollector.emit(FindResult.GenreList(CommonViewState(data = updatedGenres)))
+            flowCollector.emit(FindResult.Type(MediaType.All))
+        }
 
-            is FindAction.GetTrendingPeople -> {
-                handleNewMedia(this, action.filterList) {
-                    getTrendingPeopleUseCase(it)
+        private suspend fun handleToggleGenre(
+            flowCollector: FlowCollector<FindResult>,
+            genre: Genre,
+        ) {
+            val updatedGenres =
+                viewStates.value.genres.data?.map {
+                    if (it.id == genre.id) it.copy(selected = !it.selected) else it
                 }
-            }
 
-            // -------- Search --------
-            is FindAction.SearchMulti -> {
-                handleNewMedia(this, action.filterList) {
-                    searchMultiUseCase(action.query, it)
-                }
-            }
+            flowCollector.emit(FindResult.GenreList(CommonViewState(data = updatedGenres)))
+        }
 
-            is FindAction.SearchMovie -> {
-                handleNewMedia(this, action.filterList) {
-                    searchMovieUseCase(action.query, it)
-                }
-            }
+        private suspend fun handleGetGenreList(flowCollector: FlowCollector<FindResult>) {
+            flowCollector.emit(FindResult.GenreList(CommonViewState(isLoading = true)))
 
-            is FindAction.SearchTv -> {
-                handleNewMedia(this, action.filterList) {
-                    searchTvUseCase(action.query, it)
+            when (val dataState = getGenreListUseCase()) {
+                is DataState.Success -> {
+                    flowCollector.emit(FindResult.GenreList(CommonViewState(data = dataState.data)))
                 }
-            }
-
-            is FindAction.SearchPeople -> {
-                handleNewMedia(this, action.filterList) {
-                    searchPeopleUseCase(action.query, it)
+                is DataState.Error -> {
+                    flowCollector.emit(FindResult.GenreList(CommonViewState(errorThrowable = dataState.throwable)))
                 }
-            }
-            is FindAction.ClearFilters ->{
-                handleClearFilter(this)
+                is DataState.Empty -> {
+                    flowCollector.emit(FindResult.GenreList(CommonViewState(isEmpty = true)))
+                }
+                else -> {}
             }
         }
     }
 
-    private suspend fun handleClearFilter(flowCollector: FlowCollector<FindResult>) {
-
-        val updatedGenres =viewStates.value.genres.data?.map {
-          it.copy(selected = false)
-        }
-
-        flowCollector.emit(FindResult.GenreList(CommonViewState(data = updatedGenres)))
-        flowCollector.emit(FindResult.Type(MediaType.All))
-
-    }
-
-
-    private suspend fun handleToggleGenre(flowCollector: FlowCollector<FindResult>, genre: Genre) {
-
-        val updatedGenres =viewStates.value.genres.data?.map {
-            if (it.id == genre.id) it.copy(selected = !it.selected) else it
-        }
-
-        flowCollector.emit(FindResult.GenreList(CommonViewState(data = updatedGenres)))
-    }
-
-    private suspend fun handleGetGenreList(flowCollector: FlowCollector<FindResult>) {
-        flowCollector.emit(FindResult.GenreList(CommonViewState(isLoading = true)))
-
-        when(val dataState = getGenreListUseCase()){
-
-            is DataState.Success->{
-                flowCollector.emit(FindResult.GenreList(CommonViewState(data = dataState.data)))
-
-            }
-            is DataState.Error->{
-                flowCollector.emit(FindResult.GenreList(CommonViewState(errorThrowable = dataState.throwable)))
-            }
-            is DataState.Empty ->{
-                flowCollector.emit(FindResult.GenreList(CommonViewState(isEmpty = true)))
-            }
-            else ->{}
-        }
-
-    }
-
-
-}
 private suspend fun handleNewMedia(
     flowCollector: FlowCollector<FindResult>,
     filterList: List<Genre>,
-    getPage: suspend (Int) -> DataState<List<MediaItem>>
+    getPage: suspend (Int) -> DataState<List<MediaItem>>,
 ) {
     flowCollector.emit(FindResult.MediaLoaded(MediaViewState(isLoading = true)))
 
@@ -170,15 +167,18 @@ private suspend fun handleNewMedia(
     if (filterList.isEmpty()) {
         // No filtering needed, just load first page
         when (val dataState = getPage(currentPage)) {
-            is DataState.Success -> flowCollector.emit(
-                FindResult.MediaLoaded(MediaViewState(data = dataState.data, isSuccess = true))
-            )
-            is DataState.Error -> flowCollector.emit(
-                FindResult.MediaLoaded(MediaViewState(errorThrowable = dataState.throwable))
-            )
-            is DataState.Empty -> flowCollector.emit(
-                FindResult.MediaLoaded(MediaViewState(isEmpty = true))
-            )
+            is DataState.Success ->
+                flowCollector.emit(
+                    FindResult.MediaLoaded(MediaViewState(data = dataState.data, isSuccess = true)),
+                )
+            is DataState.Error ->
+                flowCollector.emit(
+                    FindResult.MediaLoaded(MediaViewState(errorThrowable = dataState.throwable)),
+                )
+            is DataState.Empty ->
+                flowCollector.emit(
+                    FindResult.MediaLoaded(MediaViewState(isEmpty = true)),
+                )
             else -> {}
         }
     } else {
@@ -189,9 +189,10 @@ private suspend fun handleNewMedia(
         while (keepFetching) {
             when (val dataState = getPage(currentPage)) {
                 is DataState.Success -> {
-                    val filtered = dataState.data.filter { item ->
-                        item.genre_ids?.any { it in selectedIds } == true
-                    }
+                    val filtered =
+                        dataState.data.filter { item ->
+                            item.genre_ids?.any { it in selectedIds } == true
+                        }
 
                     collectedItems += filtered
 
@@ -207,7 +208,7 @@ private suspend fun handleNewMedia(
                     keepFetching = false
                     if (collectedItems.isEmpty()) {
                         flowCollector.emit(
-                            FindResult.MediaLoaded(MediaViewState(isEmpty = true))
+                            FindResult.MediaLoaded(MediaViewState(isEmpty = true)),
                         )
                         return
                     }
@@ -215,7 +216,7 @@ private suspend fun handleNewMedia(
 
                 is DataState.Error -> {
                     flowCollector.emit(
-                        FindResult.MediaLoaded(MediaViewState(errorThrowable = dataState.throwable))
+                        FindResult.MediaLoaded(MediaViewState(errorThrowable = dataState.throwable)),
                     )
                     return
                 }
@@ -229,10 +230,9 @@ private suspend fun handleNewMedia(
             FindResult.MediaLoaded(
                 MediaViewState(
                     data = collectedItems.take(20),
-                    isSuccess = collectedItems.isNotEmpty()
-                )
-            )
+                    isSuccess = collectedItems.isNotEmpty(),
+                ),
+            ),
         )
     }
-
 }

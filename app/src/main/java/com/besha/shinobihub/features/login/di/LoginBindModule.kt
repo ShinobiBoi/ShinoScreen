@@ -9,16 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class LoginBindModule {
-
-
     @Binds
     abstract fun bindLoginRepo(loginRepoImp: LoginRepoImp): LoginRepo
 
     @Binds
-    abstract fun bindLoginRemoteClient(loginRemoteClientImp: LoginRemoteClientImp):LoginRemoteClient
-
+    abstract fun bindLoginRemoteClient(loginRemoteClientImp: LoginRemoteClientImp): LoginRemoteClient
 }

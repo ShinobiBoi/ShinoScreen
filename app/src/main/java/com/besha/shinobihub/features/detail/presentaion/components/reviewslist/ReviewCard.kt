@@ -28,36 +28,37 @@ import com.besha.shinobihub.R
 import com.besha.shinobihub.features.detail.data.model.review.Review
 import com.besha.shinobihub.features.detail.presentaion.components.expandabletext.ExpandableText
 
-
 @Composable
 fun ReviewCard(review: Review) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white)),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, colorResource(R.color.light_gray)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(colorResource(R.color.dark_blue)),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(colorResource(R.color.dark_blue)),
+                    contentAlignment = Alignment.Center,
                 ) {
                     val initials = review.author?.take(1)?.uppercase() ?: "?"
                     Text(
                         text = initials,
                         color = colorResource(R.color.white),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
                     )
                 }
 
@@ -66,12 +67,12 @@ fun ReviewCard(review: Review) {
                         text = review.author ?: "Unknown",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        color = colorResource(R.color.black)
+                        color = colorResource(R.color.black),
                     )
                     Text(
                         text = review.created_at?.substringBefore("T") ?: "",
                         fontSize = 12.sp,
-                        color = colorResource(R.color.gray)
+                        color = colorResource(R.color.gray),
                     )
                 }
             }
@@ -80,9 +81,8 @@ fun ReviewCard(review: Review) {
 
             ExpandableText(
                 text = review.content ?: "",
-                minimizedMaxLines = 5
+                minimizedMaxLines = 5,
             )
         }
     }
 }
-

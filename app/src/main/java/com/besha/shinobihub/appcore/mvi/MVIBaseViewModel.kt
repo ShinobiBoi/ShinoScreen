@@ -1,6 +1,5 @@
 package com.besha.shinobihub.appcore.mvi
 
-
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
@@ -17,8 +16,7 @@ import kotlinx.coroutines.supervisorScope
  */
 abstract class MVIBaseViewModel<A : Action, R : Result<VS>, VS : ViewState> :
     BaseViewModel<VS>() {
-
-    //default state
+    // default state
     abstract override val defaultViewState: VS
 
     // stream of actions (intents)
@@ -38,7 +36,6 @@ abstract class MVIBaseViewModel<A : Action, R : Result<VS>, VS : ViewState> :
         viewModelScope.cancel()
     }
 
-
     private fun observeOnActionsChannel() {
         viewModelScope.launch {
             supervisorScope {
@@ -47,7 +44,7 @@ abstract class MVIBaseViewModel<A : Action, R : Result<VS>, VS : ViewState> :
                         val results: Flow<R> = handleAction(action)
                         results.collect { result: R ->
                             emitState {
-                                reduce(result)//covert result to view state
+                                reduce(result) // covert result to view state
                             }
                         }
                     }
@@ -57,9 +54,7 @@ abstract class MVIBaseViewModel<A : Action, R : Result<VS>, VS : ViewState> :
     }
 
     @Synchronized
-    override fun emitState(
-        stateReducer: (oldState: VS) -> VS
-    ) {
+    override fun emitState(stateReducer: (oldState: VS) -> VS) {
         val newState = stateReducer(_viewStates.value)
         if (_viewStates.value != newState) {
             _viewStates.update {

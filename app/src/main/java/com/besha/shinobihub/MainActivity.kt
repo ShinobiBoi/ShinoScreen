@@ -25,45 +25,35 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-
     lateinit var rootController: NavHostController
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
             val mediaId = intent.getIntExtra("media_id", -1)
             val mediaTypeName = intent.getStringExtra("media_type") ?: "movie"
             val mediaType = MediaType(mediaTypeName)
 
             ComposeShinobiCimaTheme {
-                 rootController = rememberNavController()
+                rootController = rememberNavController()
 
                 NavHost(
                     navController = rootController,
                     startDestination = ScreenResources.AuthScreenRoute,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
-
                     composable<ScreenResources.AuthScreenRoute> {
-                        AuthScreen(rootController,mediaId,mediaType)
-
+                        AuthScreen(rootController, mediaId, mediaType)
                     }
                     composable<ScreenResources.MainScreeRoute> {
                         val args = it.toRoute<ScreenResources.MainScreeRoute>()
-                        MainScreen(rootController,args.mediaId,args.mediaType)
-
+                        MainScreen(rootController, args.mediaId, args.mediaType)
                     }
                 }
-
-
             }
         }
     }
-
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -79,16 +69,9 @@ class MainActivity : ComponentActivity() {
                 popUpTo(ScreenResources.AuthScreenRoute) { inclusive = true }
                 launchSingleTop = true
             }
-
         }
-
-
     }
-
-
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
@@ -100,9 +83,9 @@ fun PreviewMainScreen() {
             modifier = Modifier.fillMaxSize(),
             bottomBar = {
                 CustomBottomNavigationBar(
-                    ScreenResources.HomeScreenRoute
+                    ScreenResources.HomeScreenRoute,
                 ) {}
-            }
+            },
         ) { innerPadding ->
             // Mock Home Screen for preview
             val x = innerPadding
@@ -110,4 +93,3 @@ fun PreviewMainScreen() {
         }
     }
 }
-

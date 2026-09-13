@@ -12,23 +12,33 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 
-class ConnectivityObserver @Inject constructor(
-    @ApplicationContext context: Context
-) {
-    private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+class ConnectivityObserver
+    @Inject
+    constructor(
+        @ApplicationContext context: Context,
+    ) {
+        private val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    val isConnected: Flow<Boolean> = callbackFlow {
-        val callback = object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) { trySend(true) }
-            override fun onLost(network: Network) { trySend(false) }
-        }
+        val isConnected: Flow<Boolean> =
+            callbackFlow {
+                val callback =
+                    object : ConnectivityManager.NetworkCallback() {
+                        override fun onAvailable(network: Network) {
+                            trySend(true)
+                        }
 
-        val request = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
+                        override fun onLost(network: Network) {
+                            trySend(false)
+                        }
+                    }
 
-        connectivityManager.registerNetworkCallback(request, callback)
-        awaitClose { connectivityManager.unregisterNetworkCallback(callback) }
-    }.distinctUntilChanged()
-}
+                val request =
+                    NetworkRequest.Builder()
+                        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                        .build()
+
+                connectivityManager.registerNetworkCallback(request, callback)
+                awaitClose { connectivityManager.unregisterNetworkCallback(callback) }
+            }.distinctUntilChanged()
+    }

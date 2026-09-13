@@ -21,17 +21,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.besha.shinobihub.R
 
-
 @Composable
 fun SeasonsList(seasons: List<com.besha.shinobihub.features.detail.data.model.detailitem.Season>) {
     var expanded by remember { mutableStateOf(false) }
     val itemsToShow = if (expanded) seasons else seasons.take(5)
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         itemsToShow.forEach { season ->
             SeasonItem(season)
@@ -45,12 +45,12 @@ fun SeasonsList(seasons: List<com.besha.shinobihub.features.detail.data.model.de
                 color = colorResource(R.color.dark_blue),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable { expanded = !expanded }
-                    .padding(vertical = 4.dp)
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .clickable { expanded = !expanded }
+                        .padding(vertical = 4.dp),
             )
         }
     }
 }
-

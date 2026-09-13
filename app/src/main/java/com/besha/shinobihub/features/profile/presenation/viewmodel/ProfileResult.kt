@@ -4,40 +4,37 @@ import com.besha.shinobihub.appcore.mvi.CommonViewState
 import com.besha.shinobihub.appcore.mvi.Result
 import com.besha.shinobihub.features.home.data.model.account.AccountResponse
 
-sealed class ProfileResult ():Result<ProfileViewState>{
-
-    data class AccountLoaded(val account: CommonViewState<AccountResponse>) : ProfileResult(){
+sealed class ProfileResult() : Result<ProfileViewState> {
+    data class AccountLoaded(val account: CommonViewState<AccountResponse>) : ProfileResult() {
         override fun reduce(
             defaultState: ProfileViewState,
-            oldState: ProfileViewState
+            oldState: ProfileViewState,
         ): ProfileViewState {
             return oldState.copy(
-                account = account
+                account = account,
             )
         }
     }
 
-    data class NotificationToggle(val notification: Boolean) : ProfileResult(){
+    data class NotificationToggle(val notification: Boolean) : ProfileResult() {
         override fun reduce(
             defaultState: ProfileViewState,
-            oldState: ProfileViewState
+            oldState: ProfileViewState,
         ): ProfileViewState {
             return oldState.copy(
-                notification = notification
-            )
-        }
-
-    }
-
-    data class LoggedOut(val loggedOut: CommonViewState<Boolean>) : ProfileResult(){
-        override fun reduce(
-            defaultState: ProfileViewState,
-            oldState: ProfileViewState
-        ): ProfileViewState {
-            return oldState.copy(
-                loggedOut = loggedOut
+                notification = notification,
             )
         }
     }
 
+    data class LoggedOut(val loggedOut: CommonViewState<Boolean>) : ProfileResult() {
+        override fun reduce(
+            defaultState: ProfileViewState,
+            oldState: ProfileViewState,
+        ): ProfileViewState {
+            return oldState.copy(
+                loggedOut = loggedOut,
+            )
+        }
+    }
 }

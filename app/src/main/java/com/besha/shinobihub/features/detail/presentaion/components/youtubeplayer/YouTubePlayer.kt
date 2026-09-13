@@ -16,42 +16,37 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
-
 @Composable
-fun YouTubePlayer(
-    video: VideoItem,
-) {
-
+fun YouTubePlayer(video: VideoItem) {
     if (video.site == "YouTube" && video.type == "Trailer" && !video.id.isNullOrEmpty()) {
-
-
         Text(
             modifier = Modifier.padding(top = 32.dp, start = 18.dp, end = 18.dp),
             text = video.name!!,
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-
+            fontWeight = FontWeight.Bold,
         )
 
         AndroidView(
-            modifier = Modifier
-                .padding(top = 8.dp, start = 18.dp, end = 18.dp)
-                .fillMaxWidth()
-                .height(220.dp),
+            modifier =
+                Modifier
+                    .padding(top = 8.dp, start = 18.dp, end = 18.dp)
+                    .fillMaxWidth()
+                    .height(220.dp),
             factory = { ctx ->
                 YouTubePlayerView(ctx).apply {
                     // For Lifecycle-aware behavior:
                     (ctx as? ComponentActivity)?.lifecycle?.addObserver(this)
 
-                    addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-                        override fun onReady(youTubePlayer: YouTubePlayer) {
-                            // loadVideo expects (videoId, startSeconds)
-                            youTubePlayer.cueVideo(video.key, 0f)
-                        }
-                    })
+                    addYouTubePlayerListener(
+                        object : AbstractYouTubePlayerListener() {
+                            override fun onReady(youTubePlayer: YouTubePlayer) {
+                                // loadVideo expects (videoId, startSeconds)
+                                youTubePlayer.cueVideo(video.key, 0f)
+                            }
+                        },
+                    )
                 }
-            }
+            },
         )
     }
 }
-

@@ -9,17 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DiscoverBindModule {
-
-
+    @Binds
+    abstract fun bindDiscoverRemote(discoverRemoteClientImp: DiscoverRemoteClientImp): DiscoverRemoteClient
 
     @Binds
-    abstract fun bindDiscoverRemote(discoverRemoteClientImp: DiscoverRemoteClientImp):DiscoverRemoteClient
-
-    @Binds
-    abstract fun bindDiscoverRepo(discoverRepoImp: DiscoverRepoImp):DiscoverRepo
-
+    abstract fun bindDiscoverRepo(discoverRepoImp: DiscoverRepoImp): DiscoverRepo
 }

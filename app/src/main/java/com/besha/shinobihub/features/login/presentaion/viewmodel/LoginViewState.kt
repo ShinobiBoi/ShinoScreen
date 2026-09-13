@@ -8,5 +8,5 @@ import com.besha.shinobihub.features.login.data.model.token.TokenResponse
 data class LoginViewState(
     val requestToken: CommonViewState<TokenResponse> = CommonViewState(),
     val sessionId: CommonViewState<String> = CommonViewState(),
-    val loginResponse: CommonViewState<LoginResponse> = CommonViewState()
-):ViewState
+    val loginResponse: CommonViewState<LoginResponse> = CommonViewState(),
+) : ViewState

@@ -19,7 +19,6 @@ import com.besha.shinobihub.features.login.data.model.token.TokenResponse
 import com.besha.shinobihub.features.profile.data.model.DeleteSessionRequest
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.POST
@@ -27,16 +26,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiServices {
-
-
-
-    //AUTH////////////////////////////////////////////////
+    // AUTH////////////////////////////////////////////////
 
     @GET("authentication/token/new")
     suspend fun createRequestToken(
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<TokenResponse>
-
 
     @POST("authentication/token/validate_with_login")
     suspend fun validateWithLogin(
@@ -44,27 +39,25 @@ interface ApiServices {
         @Query("api_key") key: String = API_KEY,
     ): Response<LoginResponse>
 
-
     @POST("authentication/session/new")
     suspend fun createSession(
         @Body body: SessionRequest,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<SessionResponse>
 
     @HTTP(method = "DELETE", path = "authentication/session", hasBody = true)
     suspend fun deleteSession(
         @Body body: DeleteSessionRequest,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<SessionResponse>
 
     @GET("account")
     suspend fun getAccount(
-        @Query ("session_id") sessionId: String,
-        @Query("api_key") key: String = API_KEY
+        @Query("session_id") sessionId: String,
+        @Query("api_key") key: String = API_KEY,
     ): Response<AccountResponse>
 
-
-    //ACCOUNT ACTIONS//////////////////////////////////////////////
+    // ACCOUNT ACTIONS//////////////////////////////////////////////
 
     @POST("account/{account_id}/watchlist")
     suspend fun toggleWatchlist(
@@ -74,7 +67,6 @@ interface ApiServices {
         @Query("api_key") key: String = API_KEY,
     ): Response<MarkResponse>
 
-
     @POST("account/{account_id}/favorite")
     suspend fun toggleFavorite(
         @Path("account_id") accountId: Int,
@@ -83,26 +75,25 @@ interface ApiServices {
         @Query("api_key") key: String = API_KEY,
     ): Response<MarkResponse>
 
-
     @GET("account/{account_id}/favorite/movies")
     suspend fun getFavoriteMovies(
         @Path("account_id") accountId: Int,
         @Query("session_id") sessionId: String,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
 
     @GET("account/{account_id}/favorite/tv")
     suspend fun getFavoriteTv(
         @Path("account_id") accountId: Int,
         @Query("session_id") sessionId: String,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
 
     @GET("account/{account_id}/watchlist/movies")
     suspend fun getWatchlistMovies(
         @Path("account_id") accountId: Int,
         @Query("session_id") sessionId: String,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
 
     @GET("account/{account_id}/watchlist/tv")
@@ -112,238 +103,204 @@ interface ApiServices {
         @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
 
-
     @GET("movie/{movie_id}/account_states")
     suspend fun getMovieAccountStates(
         @Path("movie_id") movieId: Int,
         @Query("session_id") sessionId: String,
-        @Query("api_key") apiKey: String = API_KEY
+        @Query("api_key") apiKey: String = API_KEY,
     ): Response<AccountStatesResponse>
 
     @GET("tv/{tv_id}/account_states")
     suspend fun getTvAccountStates(
         @Path("tv_id") tvId: Int,
         @Query("session_id") sessionId: String,
-        @Query("api_key") apiKey: String = API_KEY
+        @Query("api_key") apiKey: String = API_KEY,
     ): Response<AccountStatesResponse>
 
-
-
-    //TRENDING////////////////////////////////////////////
+    // TRENDING////////////////////////////////////////////
 
     @GET("trending/all/week")
     suspend fun getTrendingAll(
         @Query("page") page: Int,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
 
     @GET("trending/movie/week")
     suspend fun getTrendingMovies(
         @Query("page") page: Int,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
 
     @GET("trending/tv/week")
     suspend fun getTrendingTv(
         @Query("page") page: Int,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
-
 
     @GET("trending/person/week")
     suspend fun getTrendingPeople(
         @Query("page") page: Int,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
 
-
-
-    //MOVIES//////////////////////////////////////////////////////
-
+    // MOVIES//////////////////////////////////////////////////////
 
     @GET("movie/popular")
     suspend fun getPopularMovies(
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("movie/upcoming")
     suspend fun getUpComingMovies(
-        @Query("page") page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Query("page") page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
-
-    //TV SERIES///////////////////////////////////////////////
-
+    // TV SERIES///////////////////////////////////////////////
 
     @GET("tv/on_the_air")
     suspend fun getOnTheAirTv(
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
-
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("tv/popular")
     suspend fun getPopularTv(
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
-
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("tv/top_rated")
     suspend fun getTopRatedTv(
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
-
-
-
-
-
-    //Detail////////////////////////////////////////
-
-
+    // Detail////////////////////////////////////////
 
     @GET("movie/{movie_id}")
     suspend fun getDetailMovie(
-        @Path("movie_id") movieId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<DetailMediaItemDto>
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<DetailMediaItemDto>
 
     @GET("tv/{series_id}")
     suspend fun getDetailTv(
-        @Path("series_id") seriesId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<DetailMediaItemDto>
+        @Path("series_id") seriesId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<DetailMediaItemDto>
 
     @GET("person/{person_id}")
     suspend fun getDetailPerson(
-        @Path("person_id") personId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<DetailMediaItemDto>
+        @Path("person_id") personId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<DetailMediaItemDto>
 
-
-
-
-
-    //SEARCH////////////////////////////////////////
+    // SEARCH////////////////////////////////////////
 
     @GET("search/multi")
     suspend fun searchMulti(
-        @Query("query")query:String,
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Query("query")query: String,
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("search/movie")
     suspend fun searchMovie(
-        @Query("query")query:String,
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Query("query")query: String,
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("search/tv")
     suspend fun searchTv(
-        @Query("query")query:String,
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Query("query")query: String,
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("search/person")
     suspend fun searchPeople(
-        @Query("query")query:String,
-        @Query("page")page:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
-
+        @Query("query")query: String,
+        @Query("page")page: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("genre/movie/list")
     suspend fun getGenreList(
         @Query("api_key") apiKey: String = API_KEY,
     ): Response<GenreResponse>
 
-    //VIDEOS//////////////////////////////////////
-
-
+    // VIDEOS//////////////////////////////////////
 
     @GET("movie/{movie_id}/videos")
     suspend fun getMovieVideo(
-        @Path("movie_id") movieId:Int,
-        @Query("api_key") key:String= API_KEY
-    ) :Response<VideoResponse>
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<VideoResponse>
 
     @GET("tv/{series_id}/videos")
     suspend fun getTvVideo(
-        @Path("series_id") seriesId:Int,
-        @Query("api_key")key:String= API_KEY
-    ) :Response<VideoResponse>
+        @Path("series_id") seriesId: Int,
+        @Query("api_key")key: String = API_KEY,
+    ): Response<VideoResponse>
 
-
-
-    //CREDITS///////////////////////////////////////
-
+    // CREDITS///////////////////////////////////////
 
     @GET("movie/{movie_id}/credits")
     suspend fun getMovieCredits(
-        @Path("movie_id") movieId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<CreditsResponse>
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<CreditsResponse>
 
     @GET("tv/{series_id}/credits")
     suspend fun getTvCredits(
-        @Path("series_id") seriesId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<CreditsResponse>
+        @Path("series_id") seriesId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<CreditsResponse>
 
     @GET("person/{person_id}/combined_credits")
     suspend fun getPersonCredits(
-        @Path("person_id") personId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Path("person_id") personId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
-    //SIMILAR//////////////////////////
+    // SIMILAR//////////////////////////
 
     @GET("movie/{movie_id}/similar")
     suspend fun getMovieSimilar(
-        @Path("movie_id") movieId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
     @GET("tv/{series_id}/similar")
     suspend fun getTvSimilar(
-        @Path("series_id") seriesId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<MediaResponse>
+        @Path("series_id") seriesId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MediaResponse>
 
-
-    //REVIEWS/////////////////////////
+    // REVIEWS/////////////////////////
 
     @GET("movie/{movie_id}/reviews")
     suspend fun getMovieReviews(
-        @Path("movie_id") movieId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<ReviewResponse>
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<ReviewResponse>
 
     @GET("tv/{series_id}/reviews")
     suspend fun getTvReviews(
-        @Path("series_id") seriesId:Int,
-        @Query("api_key") key:String= API_KEY
-    ):Response<ReviewResponse>
+        @Path("series_id") seriesId: Int,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<ReviewResponse>
 
-
-
-
-
-
-    //Discover///////////////////////////////////////////////
+    // Discover///////////////////////////////////////////////
     @GET("discover/movie")
     suspend fun getMovieDiscover(
         @Query("with_genres") genresId: String,
@@ -358,34 +315,11 @@ interface ApiServices {
         @Query("api_key") apiKey: String = API_KEY,
     ): Response<MediaResponse>
 
-
-    companion object{
-        const val API_KEY= BuildConfig.API_KEY
+    companion object {
+        const val API_KEY = BuildConfig.API_KEY
     }
-
 }
-
-
-
-
-
 
 // api -> endpoint
 
 // retrofit -(base url
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

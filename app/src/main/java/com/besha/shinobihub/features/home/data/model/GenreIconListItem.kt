@@ -8,10 +8,9 @@ data class GenreIconListItem(
     val icon: Int,
 )
 
-
-fun GenreIconListItem.toGenre() :Genre{
+fun GenreIconListItem.toGenre(): Genre {
     return Genre(
         id = id,
-        name = title
+        name = title,
     )
 }

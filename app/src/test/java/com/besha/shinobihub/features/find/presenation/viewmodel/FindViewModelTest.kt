@@ -27,7 +27,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FindViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -46,139 +45,146 @@ class FindViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = FindViewModel(
-            getTrendingAllUseCase,
-            getTrendingMoviesUseCase,
-            getTrendingTvUseCase,
-            getTrendingPeopleUseCase,
-            searchMultiUseCase,
-            searchMovieUseCase,
-            searchTvUseCase,
-            searchPeopleUseCase,
-            getGenreListUseCase,
-            apiServices
-        )
+        viewModel =
+            FindViewModel(
+                getTrendingAllUseCase,
+                getTrendingMoviesUseCase,
+                getTrendingTvUseCase,
+                getTrendingPeopleUseCase,
+                searchMultiUseCase,
+                searchMovieUseCase,
+                searchTvUseCase,
+                searchPeopleUseCase,
+                getGenreListUseCase,
+                apiServices,
+            )
     }
 
     // region Genre Tests
     @Test
-    fun `GetGenreList emits loading then success`() = runTest {
-        val genres = listOf(Genre(id = 1, name = "Action"))
-        coEvery { getGenreListUseCase() } returns DataState.Success(genres)
+    fun `GetGenreList emits loading then success`() =
+        runTest {
+            val genres = listOf(Genre(id = 1, name = "Action"))
+            coEvery { getGenreListUseCase() } returns DataState.Success(genres)
 
-        viewModel.handleAction(FindAction.GetGenreList).test {
-            assertThat((awaitItem() as FindResult.GenreList).state.isLoading).isTrue()
-            val result = awaitItem() as FindResult.GenreList
-            assertThat(result.state.data).isEqualTo(genres)
-            awaitComplete()
+            viewModel.handleAction(FindAction.GetGenreList).test {
+                assertThat((awaitItem() as FindResult.GenreList).state.isLoading).isTrue()
+                val result = awaitItem() as FindResult.GenreList
+                assertThat(result.state.data).isEqualTo(genres)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetGenreList emits loading then error`() = runTest {
-        val error = Throwable("Network Error")
-        coEvery { getGenreListUseCase() } returns DataState.Error(error)
+    fun `GetGenreList emits loading then error`() =
+        runTest {
+            val error = Throwable("Network Error")
+            coEvery { getGenreListUseCase() } returns DataState.Error(error)
 
-        viewModel.handleAction(FindAction.GetGenreList).test {
-            assertThat((awaitItem() as FindResult.GenreList).state.isLoading).isTrue()
-            val result = awaitItem() as FindResult.GenreList
-            assertThat(result.state.errorThrowable).isEqualTo(error)
-            awaitComplete()
+            viewModel.handleAction(FindAction.GetGenreList).test {
+                assertThat((awaitItem() as FindResult.GenreList).state.isLoading).isTrue()
+                val result = awaitItem() as FindResult.GenreList
+                assertThat(result.state.errorThrowable).isEqualTo(error)
+                awaitComplete()
+            }
         }
-    }
-
 
     // endregion
 
     // region Media Loading Tests (Trending & Search)
     @Test
-    fun `GetTrendingAll emits loading then success when filter is empty`() = runTest {
-        val items = listOf(MediaItem(id = 1, media_type = MediaType.Movies))
-        coEvery { getTrendingAllUseCase(1) } returns DataState.Success(items)
+    fun `GetTrendingAll emits loading then success when filter is empty`() =
+        runTest {
+            val items = listOf(MediaItem(id = 1, media_type = MediaType.Movies))
+            coEvery { getTrendingAllUseCase(1) } returns DataState.Success(items)
 
-        viewModel.handleAction(FindAction.GetTrendingAll(emptyList())).test {
-            assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
-            
-            val result = awaitItem() as FindResult.MediaLoaded
-            assertThat(result.state.data).isEqualTo(items)
-            assertThat(result.state.isSuccess).isTrue()
-            awaitComplete()
+            viewModel.handleAction(FindAction.GetTrendingAll(emptyList())).test {
+                assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
+
+                val result = awaitItem() as FindResult.MediaLoaded
+                assertThat(result.state.data).isEqualTo(items)
+                assertThat(result.state.isSuccess).isTrue()
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetTrendingMovies emits loading then error when use case fails`() = runTest {
-        val error = Throwable("Server Error")
-        coEvery { getTrendingMoviesUseCase(1) } returns DataState.Error(error)
+    fun `GetTrendingMovies emits loading then error when use case fails`() =
+        runTest {
+            val error = Throwable("Server Error")
+            coEvery { getTrendingMoviesUseCase(1) } returns DataState.Error(error)
 
-        viewModel.handleAction(FindAction.GetTrendingMovies(emptyList())).test {
-            assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
-            val result = awaitItem() as FindResult.MediaLoaded
-            assertThat(result.state.errorThrowable).isEqualTo(error)
-            awaitComplete()
+            viewModel.handleAction(FindAction.GetTrendingMovies(emptyList())).test {
+                assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
+                val result = awaitItem() as FindResult.MediaLoaded
+                assertThat(result.state.errorThrowable).isEqualTo(error)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `SearchMovie with query emits loading then success`() = runTest {
-        val query = "Inception"
-        val items = listOf(MediaItem(id = 1, media_type = MediaType.Movies))
-        coEvery { searchMovieUseCase(query, 1) } returns DataState.Success(items)
+    fun `SearchMovie with query emits loading then success`() =
+        runTest {
+            val query = "Inception"
+            val items = listOf(MediaItem(id = 1, media_type = MediaType.Movies))
+            coEvery { searchMovieUseCase(query, 1) } returns DataState.Success(items)
 
-        viewModel.handleAction(FindAction.SearchMovie(query, emptyList())).test {
-            assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
-            val result = awaitItem() as FindResult.MediaLoaded
-            assertThat(result.state.data).isEqualTo(items)
-            awaitComplete()
+            viewModel.handleAction(FindAction.SearchMovie(query, emptyList())).test {
+                assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
+                val result = awaitItem() as FindResult.MediaLoaded
+                assertThat(result.state.data).isEqualTo(items)
+                awaitComplete()
+            }
         }
-    }
-
-
 
     @Test
-    fun `GetTrendingPeople emits loading then success`() = runTest {
-        val items = listOf(MediaItem(id = 1, media_type = MediaType.People))
-        coEvery { getTrendingPeopleUseCase(1) } returns DataState.Success(items)
+    fun `GetTrendingPeople emits loading then success`() =
+        runTest {
+            val items = listOf(MediaItem(id = 1, media_type = MediaType.People))
+            coEvery { getTrendingPeopleUseCase(1) } returns DataState.Success(items)
 
-        viewModel.handleAction(FindAction.GetTrendingPeople(emptyList())).test {
-            assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
-            val result = awaitItem() as FindResult.MediaLoaded
-            assertThat(result.state.data).isEqualTo(items)
-            awaitComplete()
+            viewModel.handleAction(FindAction.GetTrendingPeople(emptyList())).test {
+                assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
+                val result = awaitItem() as FindResult.MediaLoaded
+                assertThat(result.state.data).isEqualTo(items)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `SearchMulti emits loading then empty result`() = runTest {
-        val query = "RandomQuery"
-        coEvery { searchMultiUseCase(query, 1) } returns DataState.Empty
+    fun `SearchMulti emits loading then empty result`() =
+        runTest {
+            val query = "RandomQuery"
+            coEvery { searchMultiUseCase(query, 1) } returns DataState.Empty
 
-        viewModel.handleAction(FindAction.SearchMulti(query, emptyList())).test {
-            assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
-            val result = awaitItem() as FindResult.MediaLoaded
-            assertThat(result.state.isEmpty).isTrue()
-            awaitComplete()
+            viewModel.handleAction(FindAction.SearchMulti(query, emptyList())).test {
+                assertThat((awaitItem() as FindResult.MediaLoaded).state.isLoading).isTrue()
+                val result = awaitItem() as FindResult.MediaLoaded
+                assertThat(result.state.isEmpty).isTrue()
+                awaitComplete()
+            }
         }
-    }
     // endregion
 
     @Test
-    fun `ChangeMediaType emits Type result`() = runTest {
-        val type = MediaType.Tv
-        viewModel.handleAction(FindAction.ChangeMediaType(type)).test {
-            val result = awaitItem() as FindResult.Type
-            assertThat(result.state).isEqualTo(type)
-            awaitComplete()
+    fun `ChangeMediaType emits Type result`() =
+        runTest {
+            val type = MediaType.Tv
+            viewModel.handleAction(FindAction.ChangeMediaType(type)).test {
+                val result = awaitItem() as FindResult.Type
+                assertThat(result.state).isEqualTo(type)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `ChangeQuery emits QueryChanged result`() = runTest {
-        val query = "Hello"
-        viewModel.handleAction(FindAction.ChangeQuery(query)).test {
-            val result = awaitItem() as FindResult.QueryChanged
-            assertThat(result.state.data).isEqualTo(query)
-            awaitComplete()
+    fun `ChangeQuery emits QueryChanged result`() =
+        runTest {
+            val query = "Hello"
+            viewModel.handleAction(FindAction.ChangeQuery(query)).test {
+                val result = awaitItem() as FindResult.QueryChanged
+                assertThat(result.state.data).isEqualTo(query)
+                awaitComplete()
+            }
         }
-    }
 }

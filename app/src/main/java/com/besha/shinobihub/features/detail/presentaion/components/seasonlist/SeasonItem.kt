@@ -27,60 +27,63 @@ import coil.compose.AsyncImage
 import com.besha.shinobihub.R
 import com.besha.shinobihub.features.detail.presentaion.components.expandabletext.ExpandableText
 
-
 @Composable
 fun SeasonItem(season: com.besha.shinobihub.features.detail.data.model.detailitem.Season) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white)),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, Color.LightGray),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
         ) {
             // Poster image
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/w500${season.poster_path}",
                 contentDescription = season.name,
-                modifier = Modifier
-                    .size(width = 100.dp, height = 140.dp)
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .size(width = 100.dp, height = 140.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.Crop,
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             // Season info
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterVertically),
             ) {
                 Text(
                     text = season.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = colorResource(R.color.black)
+                    color = colorResource(R.color.black),
                 )
 
                 Text(
                     text = "Episodes: ${season.episode_count}",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 4.dp),
                 )
 
                 if (season.overview.isNotEmpty()) {
                     ExpandableText(
                         modifier = Modifier.padding(top = 6.dp),
                         text = season.overview,
-                        minimizedMaxLines=4
+                        minimizedMaxLines = 4,
                     )
                 }
             }

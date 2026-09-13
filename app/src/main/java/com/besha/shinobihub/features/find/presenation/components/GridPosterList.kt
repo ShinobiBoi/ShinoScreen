@@ -15,17 +15,16 @@ import com.besha.shinobihub.appcore.domain.model.MediaType
 
 @Composable
 fun GridPosterList(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     posters: List<MediaItem>,
-    onItemClick: (Int,MediaType) -> Unit
+    onItemClick: (Int, MediaType) -> Unit,
 ) {
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(posters) { poster ->
 
@@ -34,13 +33,8 @@ fun GridPosterList(
                 poster.resolvedPoster,
                 poster.media_type,
                 poster.id,
-                onItemClick
+                onItemClick,
             )
-
         }
     }
 }
-
-
-
-

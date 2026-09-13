@@ -8,5 +8,5 @@ data class ReviewResponse(
     @SerializedName("results")
     val reviews: List<Review>? = listOf(),
     val total_pages: Int? = 0,
-    val total_results: Int? = 0
+    val total_results: Int? = 0,
 )

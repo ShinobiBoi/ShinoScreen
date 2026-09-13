@@ -6,7 +6,6 @@ import com.besha.shinobihub.appcore.domain.DataState
 import com.besha.shinobihub.features.login.data.model.login.LoginRequest
 import com.besha.shinobihub.features.login.data.model.login.LoginResponse
 import com.besha.shinobihub.features.login.data.model.session.SessionRequest
-import com.besha.shinobihub.features.login.data.model.session.SessionResponse
 import com.besha.shinobihub.features.login.data.model.token.TokenResponse
 import com.besha.shinobihub.features.login.domain.usecase.CreateSessionUseCase
 import com.besha.shinobihub.features.login.domain.usecase.CreateTokenUseCase
@@ -26,7 +25,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -39,99 +37,107 @@ class LoginViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = LoginViewModel(
-            loginUseCase,
-            createSessionUseCase,
-            createTokenUseCase,
-            sessionManager
-        )
+        viewModel =
+            LoginViewModel(
+                loginUseCase,
+                createSessionUseCase,
+                createTokenUseCase,
+                sessionManager,
+            )
     }
 
     @Test
-    fun `GetRequestToken emits success result`() = runTest {
-        val tokenResponse = TokenResponse(success = true, request_token = "token123", expires_at = "2023-12-31")
-        coEvery { createTokenUseCase() } returns DataState.Success(tokenResponse)
+    fun `GetRequestToken emits success result`() =
+        runTest {
+            val tokenResponse = TokenResponse(success = true, request_token = "token123", expires_at = "2023-12-31")
+            coEvery { createTokenUseCase() } returns DataState.Success(tokenResponse)
 
-        viewModel.handleAction(LoginActions.GetRequestToken).test {
-            val result = awaitItem() as LoginResult.RequestToken
-            assertThat(result.state.data).isEqualTo(tokenResponse)
-            awaitComplete()
+            viewModel.handleAction(LoginActions.GetRequestToken).test {
+                val result = awaitItem() as LoginResult.RequestToken
+                assertThat(result.state.data).isEqualTo(tokenResponse)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `GetRequestToken emits error result`() = runTest {
-        val error = Throwable("Failed to get token")
-        coEvery { createTokenUseCase() } returns DataState.Error(error)
+    fun `GetRequestToken emits error result`() =
+        runTest {
+            val error = Throwable("Failed to get token")
+            coEvery { createTokenUseCase() } returns DataState.Error(error)
 
-        viewModel.handleAction(LoginActions.GetRequestToken).test {
-            val result = awaitItem() as LoginResult.RequestToken
-            assertThat(result.state.errorThrowable).isEqualTo(error)
-            awaitComplete()
+            viewModel.handleAction(LoginActions.GetRequestToken).test {
+                val result = awaitItem() as LoginResult.RequestToken
+                assertThat(result.state.errorThrowable).isEqualTo(error)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `Login emits loading then success`() = runTest {
-        val loginRequest = LoginRequest("user", "pass", "token")
-        val loginResponse = LoginResponse(success = true, request_token = "token", expires_at = "2023-12-31")
-        coEvery { loginUseCase(loginRequest) } returns DataState.Success(loginResponse)
+    fun `Login emits loading then success`() =
+        runTest {
+            val loginRequest = LoginRequest("user", "pass", "token")
+            val loginResponse = LoginResponse(success = true, request_token = "token", expires_at = "2023-12-31")
+            coEvery { loginUseCase(loginRequest) } returns DataState.Success(loginResponse)
 
-        viewModel.handleAction(LoginActions.Login(loginRequest)).test {
-            val loading = awaitItem() as LoginResult.Login
-            assertThat(loading.state.isLoading).isTrue()
+            viewModel.handleAction(LoginActions.Login(loginRequest)).test {
+                val loading = awaitItem() as LoginResult.Login
+                assertThat(loading.state.isLoading).isTrue()
 
-            val success = awaitItem() as LoginResult.Login
-            assertThat(success.state.data).isEqualTo(loginResponse)
-            awaitComplete()
+                val success = awaitItem() as LoginResult.Login
+                assertThat(success.state.data).isEqualTo(loginResponse)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `Login emits loading then error`() = runTest {
-        val loginRequest = LoginRequest("user", "pass", "token")
-        val error = Throwable("Unauthorized")
-        coEvery { loginUseCase(loginRequest) } returns DataState.Error(error)
+    fun `Login emits loading then error`() =
+        runTest {
+            val loginRequest = LoginRequest("user", "pass", "token")
+            val error = Throwable("Unauthorized")
+            coEvery { loginUseCase(loginRequest) } returns DataState.Error(error)
 
-        viewModel.handleAction(LoginActions.Login(loginRequest)).test {
-            awaitItem() // loading
-            val result = awaitItem() as LoginResult.Login
-            assertThat(result.state.errorThrowable).isEqualTo(error)
-            awaitComplete()
+            viewModel.handleAction(LoginActions.Login(loginRequest)).test {
+                awaitItem() // loading
+                val result = awaitItem() as LoginResult.Login
+                assertThat(result.state.errorThrowable).isEqualTo(error)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `CreateSession emits success result`() = runTest {
-        val sessionRequest = SessionRequest("token")
-        val sessionResponse = "Sucess"
-        coEvery { createSessionUseCase(sessionRequest) } returns DataState.Success(sessionResponse)
+    fun `CreateSession emits success result`() =
+        runTest {
+            val sessionRequest = SessionRequest("token")
+            val sessionResponse = "Sucess"
+            coEvery { createSessionUseCase(sessionRequest) } returns DataState.Success(sessionResponse)
 
-        viewModel.handleAction(LoginActions.CreateSession(sessionRequest)).test {
-            val result = awaitItem() as LoginResult.SessionCreated
-            assertThat(result.state.data).isEqualTo(sessionResponse)
-            awaitComplete()
+            viewModel.handleAction(LoginActions.CreateSession(sessionRequest)).test {
+                val result = awaitItem() as LoginResult.SessionCreated
+                assertThat(result.state.data).isEqualTo(sessionResponse)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `SaveSessionId calls sessionManager`() = runTest {
-        val sessionId = "sid123"
-        coEvery { sessionManager.saveSessionId(sessionId) } just Runs
+    fun `SaveSessionId calls sessionManager`() =
+        runTest {
+            val sessionId = "sid123"
+            coEvery { sessionManager.saveSessionId(sessionId) } just Runs
 
-        viewModel.handleAction(LoginActions.SaveSessionId(sessionId)).test {
-            awaitComplete()
+            viewModel.handleAction(LoginActions.SaveSessionId(sessionId)).test {
+                awaitComplete()
+            }
+            coVerify { sessionManager.saveSessionId(sessionId) }
         }
-        coVerify { sessionManager.saveSessionId(sessionId) }
-    }
 
     @Test
-    fun `Logout calls sessionManager clearSession`() = runTest {
-        coEvery { sessionManager.clearSession() } just Runs
+    fun `Logout calls sessionManager clearSession`() =
+        runTest {
+            coEvery { sessionManager.clearSession() } just Runs
 
-        viewModel.handleAction(LoginActions.Logout).test {
-            awaitComplete()
+            viewModel.handleAction(LoginActions.Logout).test {
+                awaitComplete()
+            }
+            coVerify { sessionManager.clearSession() }
         }
-        coVerify { sessionManager.clearSession() }
-    }
 }

@@ -1,6 +1,5 @@
 package com.besha.shinobihub
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,17 +28,18 @@ data class BottomNavItem(
     val icon: Int,
 )
 
-val navItems = listOf(
-    BottomNavItem(route = ScreenResources.FindScreenRoute, label = "Find", icon = R.drawable.selected_searchicon),
-    BottomNavItem(route = ScreenResources.HomeScreenRoute, label = "Home", icon = R.drawable.selected_homeicon),
-    BottomNavItem(route = ScreenResources.ProfileScreenRoute, label = "Profile", icon = R.drawable.selected_profileicon),
-)
+val navItems =
+    listOf(
+        BottomNavItem(route = ScreenResources.FindScreenRoute, label = "Find", icon = R.drawable.selected_searchicon),
+        BottomNavItem(route = ScreenResources.HomeScreenRoute, label = "Home", icon = R.drawable.selected_homeicon),
+        BottomNavItem(route = ScreenResources.ProfileScreenRoute, label = "Profile", icon = R.drawable.selected_profileicon),
+    )
 
 // A simplified version for previewing
 @Composable
 fun CustomBottomNavigationBar(
     selectedRoute: ScreenResources,
-    onItemSelected: (ScreenResources) -> Unit
+    onItemSelected: (ScreenResources) -> Unit,
 ) {
     val containerColor = colorResource(R.color.white)
     val selectedIndicatorColor = colorResource(R.color.dark_blue)
@@ -50,19 +50,17 @@ fun CustomBottomNavigationBar(
         color = containerColor,
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         shadowElevation = 8.dp, // optional shadow
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 2.dp)
-
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 2.dp),
     ) {
         NavigationBar(
             containerColor = Color.Transparent, // important! transparent to use Surface color
-            tonalElevation = 0.dp
+            tonalElevation = 0.dp,
         ) {
             navItems.forEach { item ->
                 val isSelected = selectedRoute == item.route
-
-
 
                 NavigationBarItem(
                     selected = isSelected,
@@ -73,7 +71,7 @@ fun CustomBottomNavigationBar(
                                 painter = painterResource(id = item.icon),
                                 modifier = Modifier.size(28.dp),
                                 contentDescription = item.label,
-                                tint = if (isSelected) selectedIconColorOnCircle else colorResource(R.color.gray)
+                                tint = if (isSelected) selectedIconColorOnCircle else colorResource(R.color.gray),
                             )
                         }
 
@@ -81,7 +79,7 @@ fun CustomBottomNavigationBar(
                             Surface(
                                 shape = CircleShape,
                                 color = selectedIndicatorColor,
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(48.dp),
                             ) {
                                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                     iconContent()
@@ -94,21 +92,19 @@ fun CustomBottomNavigationBar(
                     label = {
                         Text(
                             text = if (isSelected) "" else item.label,
-                            color = colorResource(R.color.gray)
+                            color = colorResource(R.color.gray),
                         )
                     },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = Color.Transparent,
-                        selectedIconColor = Color.Transparent,
-                        unselectedIconColor = colorResource(R.color.gray),
-                        selectedTextColor = colorResource(R.color.gray),
-                        unselectedTextColor =colorResource(R.color.gray)
-                    )
+                    colors =
+                        NavigationBarItemDefaults.colors(
+                            indicatorColor = Color.Transparent,
+                            selectedIconColor = Color.Transparent,
+                            unselectedIconColor = colorResource(R.color.gray),
+                            selectedTextColor = colorResource(R.color.gray),
+                            unselectedTextColor = colorResource(R.color.gray),
+                        ),
                 )
             }
         }
     }
 }
-
-
-

@@ -13,24 +13,25 @@ import com.besha.shinobihub.appcore.domain.model.MediaItem
 import com.besha.shinobihub.appcore.domain.model.MediaType
 
 @Composable
-fun PosterList(posters: List<MediaItem>, onItemClick: (Int, MediaType) -> Unit) {
-
-
+fun PosterList(
+    posters: List<MediaItem>,
+    onItemClick: (Int, MediaType) -> Unit,
+) {
     LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp),
     ) {
-
         items(posters) { poster ->
             SmallPosterItem(
                 poster.resolvedTitle,
                 poster.resolvedPoster,
                 poster.media_type,
                 poster.id,
-                onItemClick
+                onItemClick,
             )
         }
     }

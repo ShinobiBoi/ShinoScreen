@@ -15,22 +15,17 @@ import com.besha.shinobihub.R
 import com.besha.shinobihub.appcore.domain.model.MediaType
 import com.besha.shinobihub.appcore.mvi.MediaViewState
 
-
 @Composable
 fun FindMediaGridList(
     state: MediaViewState,
     modifier: Modifier = Modifier,
     onItemClick: (Int, MediaType) -> Unit,
 ) {
-
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
-
-
         when {
             state.isLoading -> {
                 CircularProgressIndicator()
@@ -41,12 +36,12 @@ fun FindMediaGridList(
                     text = "It's empty here!",
                     color = colorResource(R.color.gray),
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
             }
 
             else -> {
-                GridPosterList(modifier,state.data, onItemClick)
+                GridPosterList(modifier, state.data, onItemClick)
             }
         }
     }

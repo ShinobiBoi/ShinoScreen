@@ -31,21 +31,20 @@ import com.besha.shinobihub.features.nointernet.NoInternetScreen
 import com.besha.shinobihub.features.profile.presenation.screen.ProfileScreen
 import com.besha.shinobihub.features.watchlist.presentaion.screen.WatchListScreen
 
-
 @Composable
-fun MainScreen(rootController: NavController, mediaId: Int?, mediaType: MediaType?) {
-
-
+fun MainScreen(
+    rootController: NavController,
+    mediaId: Int?,
+    mediaType: MediaType?,
+) {
     val connectivityViewModel = hiltViewModel<ConnectivityViewModel>()
     val isConnected by connectivityViewModel.isConnected.collectAsState()
-
 
     val navController = rememberNavController()
     val bottomNavViewModel = hiltViewModel<BottomNavViewModel>()
     val currentRoute by bottomNavViewModel.currentRoute.collectAsState()
 
     val lastNavigatedMediaId = rememberSaveable { mutableStateOf(-1) }
-
 
     if (isConnected) {
         LaunchedEffect(navController) {
@@ -59,46 +58,42 @@ fun MainScreen(rootController: NavController, mediaId: Int?, mediaType: MediaTyp
             }
         }
 
-
         LaunchedEffect(mediaId) {
             if (mediaId != null && mediaId != -1 && mediaType != null && lastNavigatedMediaId.value != mediaId) {
                 navController.navigate(
                     ScreenResources.DetailScreenRoute(
                         id = mediaId,
-                        mediaType = mediaType
-                    )
+                        mediaType = mediaType,
+                    ),
                 )
                 lastNavigatedMediaId.value = mediaId
             }
         }
     }
 
-    Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-
-        if (isConnected &&
-            currentRoute !is ScreenResources.DetailScreenRoute &&
-            currentRoute !is ScreenResources.DiscoverScreenRoute &&
-            currentRoute !is ScreenResources.FavouritesScreenRoute &&
-            currentRoute !is ScreenResources.WatchListScreenRoute &&
-            currentRoute !is ScreenResources.AboutScreenRoute
-        ) {
-            CustomBottomNavigationBar(currentRoute) { selectedRoute ->
-                if (selectedRoute != currentRoute) {
-                    bottomNavViewModel.onRouteSelected(selectedRoute)
-                    navController.navigate(selectedRoute) {
-                        launchSingleTop = true
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
-                        restoreState = true
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            if (isConnected &&
+                currentRoute !is ScreenResources.DetailScreenRoute &&
+                currentRoute !is ScreenResources.DiscoverScreenRoute &&
+                currentRoute !is ScreenResources.FavouritesScreenRoute &&
+                currentRoute !is ScreenResources.WatchListScreenRoute &&
+                currentRoute !is ScreenResources.AboutScreenRoute
+            ) {
+                CustomBottomNavigationBar(currentRoute) { selectedRoute ->
+                    if (selectedRoute != currentRoute) {
+                        bottomNavViewModel.onRouteSelected(selectedRoute)
+                        navController.navigate(selectedRoute) {
+                            launchSingleTop = true
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            restoreState = true
+                        }
                     }
                 }
             }
-
-        }
-
-
-    }
+        },
     ) { innerPadding ->
-
 
         if (!isConnected) {
             NoInternetScreen(onRetry = { /* optional manual re-check trigger */ })
@@ -106,12 +101,10 @@ fun MainScreen(rootController: NavController, mediaId: Int?, mediaType: MediaTyp
             NavHost(
                 navController = navController,
                 startDestination = ScreenResources.HomeScreenRoute,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
             ) {
                 composable<ScreenResources.HomeScreenRoute> {
-
                     HomeScreen(controller = navController)
-
                 }
                 composable<ScreenResources.FindScreenRoute> {
                     FindScreen(navController)
@@ -121,7 +114,8 @@ fun MainScreen(rootController: NavController, mediaId: Int?, mediaType: MediaTyp
                     val args = it.toRoute<ScreenResources.DetailScreenRoute>()
                     MediaDetailScreen(
                         args.id,
-                        args.mediaType, navController
+                        args.mediaType,
+                        navController,
                     )
                 }
                 composable<ScreenResources.DiscoverScreenRoute> {
@@ -141,9 +135,7 @@ fun MainScreen(rootController: NavController, mediaId: Int?, mediaType: MediaTyp
                 composable<ScreenResources.AboutScreenRoute> {
                     AboutScreen(navController)
                 }
-
             }
         }
     }
-
 }

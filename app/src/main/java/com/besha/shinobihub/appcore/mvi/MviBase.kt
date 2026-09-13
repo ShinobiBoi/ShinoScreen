@@ -2,7 +2,6 @@ package com.besha.shinobihub.appcore.mvi
 
 import com.besha.shinobihub.appcore.domain.model.MediaItem
 
-
 /**
  * Interface definition of the Action(Intent in MVI)
  */
@@ -13,12 +12,14 @@ interface Action
  */
 interface ViewState
 
-
 /**
  * Interface definition of the Result that will be reduced to [ViewState]
  */
 interface Result<VS : ViewState> {
-    fun reduce(defaultState: VS, oldState: VS): VS
+    fun reduce(
+        defaultState: VS,
+        oldState: VS,
+    ): VS
 }
 
 data class CommonViewState<T>(

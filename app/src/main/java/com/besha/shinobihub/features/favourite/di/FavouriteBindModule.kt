@@ -9,16 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class FavouriteBindModule {
-
+    @Binds
+    abstract fun bindFavouriteRemoteClient(clientImp: FavouriteRemoteClientImp): FavouriteRemoteClient
 
     @Binds
-    abstract fun bindFavouriteRemoteClient(clientImp: FavouriteRemoteClientImp):FavouriteRemoteClient
-
-    @Binds
-    abstract fun bindFavouriteRepo(repo: FavouriteRepoImp):FavouriteRepo
-
+    abstract fun bindFavouriteRepo(repo: FavouriteRepoImp): FavouriteRepo
 }

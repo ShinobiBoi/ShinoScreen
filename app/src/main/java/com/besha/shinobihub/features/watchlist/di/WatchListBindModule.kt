@@ -9,17 +9,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class WatchListBindModule {
-
     @Binds
     abstract fun bindWatchListRemoteClient(client: WatchListRemoteClientImp): WatchListRemoteClient
 
     @Binds
     abstract fun bindWatchListRepo(repo: WatchListRepoImp): WatchListRepo
-
-
-
 }

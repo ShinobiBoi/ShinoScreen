@@ -30,17 +30,18 @@ import com.besha.shinobihub.R
 @Composable
 fun NoInternetScreen(onRetry: () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Icon(
             imageVector = Icons.Default.WifiOff,
             contentDescription = "No internet",
             modifier = Modifier.size(96.dp),
-            tint = colorResource(R.color.gray)
+            tint = colorResource(R.color.gray),
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -49,7 +50,7 @@ fun NoInternetScreen(onRetry: () -> Unit) {
             text = "No Internet Connection",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(R.color.black)
+            color = colorResource(R.color.black),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -58,7 +59,7 @@ fun NoInternetScreen(onRetry: () -> Unit) {
             text = "Please check your connection and try again.",
             fontSize = 15.sp,
             color = colorResource(R.color.gray),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.height(28.dp))
@@ -67,9 +68,10 @@ fun NoInternetScreen(onRetry: () -> Unit) {
             onClick = onRetry,
             shape = RoundedCornerShape(50),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.dark_blue)),
-            modifier = Modifier
-                .fillMaxWidth(0.6f)
-                .height(48.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.6f)
+                    .height(48.dp),
         ) {
             Icon(Icons.Default.Refresh, contentDescription = null, tint = colorResource(R.color.white))
             Spacer(modifier = Modifier.width(8.dp))

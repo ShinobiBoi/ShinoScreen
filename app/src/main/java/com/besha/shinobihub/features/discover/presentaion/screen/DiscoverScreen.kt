@@ -32,8 +32,10 @@ import com.besha.shinobihub.features.discover.presentaion.viewmodel.DiscoverView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiscoverScreen(navController: NavController,genreId:Int) {
-
+fun DiscoverScreen(
+    navController: NavController,
+    genreId: Int,
+) {
     val discoverViewModel = hiltViewModel<DiscoverViewModel>()
     val state by discoverViewModel.viewStates.collectAsState()
 
@@ -48,34 +50,37 @@ fun DiscoverScreen(navController: NavController,genreId:Int) {
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding()
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(),
     ) {
-
         // Bottom sheet for filtering
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
                 containerColor = colorResource(R.color.white),
-                dragHandle = {}
+                dragHandle = {},
             ) {
                 DiscoverFilterSheet(
                     currentMediaType = state.mediaType,
                     onMediaTypeChange = { newType ->
                         discoverViewModel.executeAction(DiscoverAction.ChangeMediaType(newType))
-                        val selectedIds = discoverViewModel.viewStates.value.genres.data
-                            ?.filter { it.selected }
-                            ?.joinToString(",") { it.id.toString() }
-                            ?: ""
+                        val selectedIds =
+                            discoverViewModel.viewStates.value.genres.data
+                                ?.filter { it.selected }
+                                ?.joinToString(",") { it.id.toString() }
+                                ?: ""
                         when (newType) {
-                            MediaType.Movies -> discoverViewModel.executeAction(
-                                DiscoverAction.GetDiscoverMovie(selectedIds)
-                            )
-                            MediaType.Tv -> discoverViewModel.executeAction(
-                                DiscoverAction.GetDiscoverTv(selectedIds)
-                            )
+                            MediaType.Movies ->
+                                discoverViewModel.executeAction(
+                                    DiscoverAction.GetDiscoverMovie(selectedIds),
+                                )
+                            MediaType.Tv ->
+                                discoverViewModel.executeAction(
+                                    DiscoverAction.GetDiscoverTv(selectedIds),
+                                )
                             else -> {}
                         }
                     },
@@ -83,25 +88,28 @@ fun DiscoverScreen(navController: NavController,genreId:Int) {
                     toggleGenre = { genre ->
                         discoverViewModel.executeAction(DiscoverAction.ToggleGenre(genre.id!!))
 
-                        val selectedIds = discoverViewModel.viewStates.value.genres.data
-                            ?.filter { it.selected }
-                            ?.joinToString(",") { it.id.toString() }
-                            ?: ""
+                        val selectedIds =
+                            discoverViewModel.viewStates.value.genres.data
+                                ?.filter { it.selected }
+                                ?.joinToString(",") { it.id.toString() }
+                                ?: ""
 
                         when (discoverViewModel.viewStates.value.mediaType) {
-                            MediaType.Movies -> discoverViewModel.executeAction(
-                                DiscoverAction.GetDiscoverMovie(selectedIds)
-                            )
-                            MediaType.Tv -> discoverViewModel.executeAction(
-                                DiscoverAction.GetDiscoverTv(selectedIds)
-                            )
+                            MediaType.Movies ->
+                                discoverViewModel.executeAction(
+                                    DiscoverAction.GetDiscoverMovie(selectedIds),
+                                )
+                            MediaType.Tv ->
+                                discoverViewModel.executeAction(
+                                    DiscoverAction.GetDiscoverTv(selectedIds),
+                                )
                             else -> {}
                         }
                     },
                     genres = state.genres.data?.sortedByDescending { it.selected } ?: emptyList(),
                     onClearFilters = {
                         discoverViewModel.executeAction(DiscoverAction.ClearFilters)
-                    }
+                    },
                 )
             }
         }
@@ -109,48 +117,51 @@ fun DiscoverScreen(navController: NavController,genreId:Int) {
         // When media type changes, reload using selected genres
         LaunchedEffect(
             key1 = state.mediaType,
-            key2 = state.genres
+            key2 = state.genres,
         ) {
             if (!state.genres.data.isNullOrEmpty() && !didToggle) {
                 discoverViewModel.executeAction(DiscoverAction.ToggleGenre(genreId))
                 didToggle = true
             }
 
-
-            val selectedIds = state.genres.data
-                ?.filter { it.selected }
-                ?.joinToString(",") { it.id.toString() }
-                ?: ""
+            val selectedIds =
+                state.genres.data
+                    ?.filter { it.selected }
+                    ?.joinToString(",") { it.id.toString() }
+                    ?: ""
 
             when (state.mediaType) {
-                MediaType.Movies -> discoverViewModel.executeAction(
-                    DiscoverAction.GetDiscoverMovie(selectedIds)
-                )
-                MediaType.Tv -> discoverViewModel.executeAction(
-                    DiscoverAction.GetDiscoverTv(selectedIds)
-                )
+                MediaType.Movies ->
+                    discoverViewModel.executeAction(
+                        DiscoverAction.GetDiscoverMovie(selectedIds),
+                    )
+                MediaType.Tv ->
+                    discoverViewModel.executeAction(
+                        DiscoverAction.GetDiscoverTv(selectedIds),
+                    )
                 else -> {}
             }
         }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = "Popular Genres",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 45.dp, start = 14.dp)
+                modifier = Modifier.padding(top = 45.dp, start = 14.dp),
             )
 
             Text(
                 text = "View All",
                 fontSize = 16.sp,
                 color = colorResource(R.color.gray),
-                modifier = Modifier
-                    .padding(top = 47.dp, end = 17.dp)
-                    .clickable { showBottomSheet = true }
+                modifier =
+                    Modifier
+                        .padding(top = 47.dp, end = 17.dp)
+                        .clickable { showBottomSheet = true },
             )
         }
 
@@ -165,12 +176,13 @@ fun DiscoverScreen(navController: NavController,genreId:Int) {
         // Display results
         DiscoverGridLIst(
             state = state.media,
-            modifier = Modifier.padding(top = 40.dp, start = 17.dp)
+            modifier = Modifier.padding(top = 40.dp, start = 17.dp),
         ) { id, type ->
             navController.navigate(ScreenResources.DetailScreenRoute(id, type))
         }
     }
 }
+
 @Composable
 fun DiscoverFilterSheet(
     currentMediaType: MediaType,
@@ -178,70 +190,76 @@ fun DiscoverFilterSheet(
     onCancel: () -> Unit,
     onClearFilters: () -> Unit,
     toggleGenre: (genre: Genre) -> Unit,
-    genres: List<Genre>
+    genres: List<Genre>,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val SelectedColor = colorResource(R.color.light_blue)
     val visibleGenres = if (expanded) genres else genres.take((genres.size / 2).coerceAtLeast(1))
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.9f)
-            .padding(16.dp)
-            .animateContentSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.9f)
+                .padding(16.dp)
+                .animateContentSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // Header Row — Close + Title + Clear Filters
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Close",
                     tint = Color.Black,
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clickable { onCancel() }
+                    modifier =
+                        Modifier
+                            .size(28.dp)
+                            .clickable { onCancel() },
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Discover Filters",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
             }
-
         }
 
         // Genre grid
         FlowRow(
             modifier = Modifier.padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             visibleGenres.forEach { item ->
                 Card(
                     shape = RoundedCornerShape(10.dp),
                     elevation = cardElevation(defaultElevation = 4.dp),
-                    colors = cardColors(
-                        containerColor = if (item.selected)
-                            SelectedColor
-                        else
-                            colorResource(R.color.light_gray)
-                    ),
-                    onClick = { toggleGenre(item) }
+                    colors =
+                        cardColors(
+                            containerColor =
+                                if (item.selected) {
+                                    SelectedColor
+                                } else {
+                                    colorResource(R.color.light_gray)
+                                },
+                        ),
+                    onClick = { toggleGenre(item) },
                 ) {
                     Text(
                         text = item.name ?: "",
-                        color = if (item.selected)
-                            colorResource(R.color.white)
-                        else
-                            colorResource(R.color.black),
+                        color =
+                            if (item.selected) {
+                                colorResource(R.color.white)
+                            } else {
+                                colorResource(R.color.black)
+                            },
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                        fontSize = 15.sp
+                        fontSize = 15.sp,
                     )
                 }
             }
@@ -250,7 +268,7 @@ fun DiscoverFilterSheet(
         if (genres.size > visibleGenres.size) {
             TextButton(
                 onClick = { expanded = !expanded },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             ) {
                 Text(if (expanded) "Show Less" else "Show More")
             }
@@ -258,15 +276,16 @@ fun DiscoverFilterSheet(
 
         // Media type radio column
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = "Media Type",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 4.dp)
+                modifier = Modifier.padding(bottom = 4.dp),
             )
 
             val options = listOf(MediaType.Movies, MediaType.Tv)
@@ -274,23 +293,25 @@ fun DiscoverFilterSheet(
                 val selected = type == currentMediaType
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onMediaTypeChange(type) }
-                        .padding(horizontal = 8.dp, vertical = 6.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { onMediaTypeChange(type) }
+                            .padding(horizontal = 8.dp, vertical = 6.dp),
                 ) {
                     RadioButton(
                         selected = selected,
                         onClick = { onMediaTypeChange(type) },
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = SelectedColor,
-                            unselectedColor = colorResource(R.color.gray)
-                        )
+                        colors =
+                            RadioButtonDefaults.colors(
+                                selectedColor = SelectedColor,
+                                unselectedColor = colorResource(R.color.gray),
+                            ),
                     )
                     Text(
                         text = if (type == MediaType.Movies) "Movies" else "TV Series",
                         color = if (selected) colorResource(R.color.black) else colorResource(R.color.gray),
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
                     )
                 }
             }
@@ -298,31 +319,30 @@ fun DiscoverFilterSheet(
 
         Spacer(modifier = Modifier.weight(1f))
 
-
-
         TextButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(10.dp))
-                .background(colorResource(R.color.light_blue)),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(colorResource(R.color.light_blue)),
             onClick = {
                 onClearFilters()
                 onCancel()
             },
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(0.dp),
         ) {
             Text(
                 text = "Clear Filters",
                 color = colorResource(R.color.white),
                 fontSize = 15.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
 
         // Bottom close button
         TextButton(
             onClick = onCancel,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Close")
         }

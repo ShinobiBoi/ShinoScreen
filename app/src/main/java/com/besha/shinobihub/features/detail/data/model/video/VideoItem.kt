@@ -10,5 +10,5 @@ data class VideoItem(
     val published_at: String? = "",
     val site: String? = "",
     val size: Int? = 0,
-    val type: String? = ""
+    val type: String? = "",
 )
