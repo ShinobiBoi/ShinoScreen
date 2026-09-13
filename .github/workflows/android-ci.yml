@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     name: Gradle build
-    needs: lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
